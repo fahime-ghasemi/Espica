@@ -3,9 +3,7 @@ package com.espica
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
-import com.espica.ui.GetPhoneFragment
 import com.espica.ui.LoginFragment
-import com.espica.ui.SendCodeFragment
 
 class LoginActivity : AppCompatActivity() {
 

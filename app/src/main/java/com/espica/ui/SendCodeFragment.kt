@@ -24,7 +24,5 @@ class SendCodeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_send_code,container,false)
     }
 
-    log
-
 
 }
