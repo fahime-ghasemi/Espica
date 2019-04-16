@@ -1,7 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity"
+        android:background="@color/logo"
+>
+
+    <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_launcher_round"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/loginWithPhone"
+            app:layout_constraintTop_toTopOf="parent"
+             />
+
+
+    <TextView
+            android:id="@+id/loginWithPhone"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:text="@string/login_with_phone"
+            android:layout_marginTop="88dp"
+            android:layout_marginLeft="22dp"
+            android:layout_marginRight="22dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:background="@drawable/buton"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintHorizontal_bias="0.5" app:layout_constraintBottom_toTopOf="@+id/loginWithGoogle"/>
+
+
+    <!--<ImageView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/ic_phone"-->
+    <!--android:layout_marginLeft="220dp"-->
+    <!--android:paddingTop="6dp"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="@id/textView2"-->
+    <!--app:layout_constraintBottom_toBottomOf="@id/textView2"-->
+
+    <!--/>-->
+
+    <TextView
+            android:id="@+id/loginWithGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_with_google"
+            android:layout_marginLeft="22dp"
+            android:layout_marginRight="22dp"
+            android:layout_marginTop="33dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:background="@drawable/buton"
+            app:layout_constraintTop_toBottomOf="@+id/loginWithPhone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="0.5"/>
+
+
+    <!--<ImageView-->
+    <!--android:id="@+id/imgView2"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="60dp"-->
+    <!--android:layout_marginLeft="220dp"-->
+    <!--android:paddingTop="2dp"-->
+    <!--android:paddingBottom="2dp"-->
+    <!--app:layout_constraintBottom_toBottomOf="@id/textView"-->
+    <!--app:layout_constraintTop_toTopOf="@id/textView"-->
+    <!--app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--app:layout_constraintRight_toRightOf="parent"-->
+    <!--app:srcCompat="@drawable/google"/>-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+

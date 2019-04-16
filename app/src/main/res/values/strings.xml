@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Espica</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_phone">شماره همراه خود را برای دریافت کد فعالسازی وارد کنید</string>
+    <string name="enter_code">کد فعالسازی را وارد کنید</string>
+    <string name="accept">تایید</string>
+    <string name="login_with_phone">ورود با شماره تلفن</string>
+    <string name="login_with_google">ورود با حساب گوگل</string>
 </resources>
