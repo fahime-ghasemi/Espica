@@ -8,4 +8,5 @@
     <string name="accept">تایید</string>
     <string name="login_with_phone">ورود با شماره تلفن</string>
     <string name="login_with_google">ورود با حساب گوگل</string>
+    <string name="home">خانه</string>
 </resources>
