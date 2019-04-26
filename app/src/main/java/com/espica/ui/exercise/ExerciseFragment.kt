@@ -1,6 +1,5 @@
 package com.espica.ui.home
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.espica.BaseFragment
@@ -9,11 +8,11 @@ import com.espica.R
 import com.espica.data.network.ApiClient
 import kotlinx.android.synthetic.main.loading.*
 
-class HomeFragment : BaseFragment(), ExerciseContract.View {
+class ExerciseFragment : BaseFragment(), ExerciseContract.View {
 
     lateinit var presenter: ExercisePresenter
 
-    override val layoutResId = R.layout.fragment_home
+    override val layoutResId = R.layout.fragment_review
 
     companion object {
         fun newInstance(): ExerciseFragment {
@@ -30,12 +29,6 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         presenter.view = this
-        presenter.loadVideos()
-
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
 
     }
 

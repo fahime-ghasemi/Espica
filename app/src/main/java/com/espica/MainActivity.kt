@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.core.view.GravityCompat
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.espica.data.model.MenuItem
-import com.espica.ui.home.HomeFragment
-import com.espica.ui.login.adapter.MenuAdapter
+import com.espica.ui.home.ExerciseFragment
+import com.espica.ui.adapter.MenuAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity(),MainActivityListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
         listViewMenu.adapter = MenuAdapter(this, menuItems)
-        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, HomeFragment.newInstance()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.frameLayout, ExerciseFragment.newInstance()).commit()
     }
 
     override fun onNewFragmentAttached(fragmentPosition: Int) {

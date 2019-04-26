@@ -1,4 +1,4 @@
-package com.espica.ui.login.adapter
+package com.espica.ui.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.graphics.component1
 import com.espica.R
 import com.espica.data.model.MenuItem
 
