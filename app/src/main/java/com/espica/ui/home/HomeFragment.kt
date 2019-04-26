@@ -16,8 +16,8 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
     override val layoutResId = R.layout.fragment_home
 
     companion object {
-        fun newInstance(): ExerciseFragment {
-            return ExerciseFragment()
+        fun newInstance(): HomeFragment {
+            return HomeFragment()
         }
     }
 
@@ -29,6 +29,7 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mListener?.onNewFragmentAttached(0)
         presenter.view = this
         presenter.loadVideos()
 

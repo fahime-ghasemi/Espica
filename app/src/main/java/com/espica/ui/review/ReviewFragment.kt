@@ -15,8 +15,8 @@ class ReviewFragment : BaseFragment(), ExerciseContract.View {
     override val layoutResId = R.layout.fragment_review
 
     companion object {
-        fun newInstance(): ExerciseFragment {
-            return ExerciseFragment()
+        fun newInstance(): ReviewFragment {
+            return ReviewFragment()
         }
     }
 
@@ -28,6 +28,7 @@ class ReviewFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mListener?.onNewFragmentAttached(1)
         presenter.view = this
 
     }

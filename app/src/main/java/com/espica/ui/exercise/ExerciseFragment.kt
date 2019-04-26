@@ -12,7 +12,7 @@ class ExerciseFragment : BaseFragment(), ExerciseContract.View {
 
     lateinit var presenter: ExercisePresenter
 
-    override val layoutResId = R.layout.fragment_review
+    override val layoutResId = R.layout.fragment_exercise
 
     companion object {
         fun newInstance(): ExerciseFragment {
@@ -28,6 +28,7 @@ class ExerciseFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mListener?.onNewFragmentAttached(2)
         presenter.view = this
 
     }
