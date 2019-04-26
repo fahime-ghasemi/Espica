@@ -9,4 +9,11 @@
     <string name="login_with_phone">ورود با شماره تلفن</string>
     <string name="login_with_google">ورود با حساب گوگل</string>
     <string name="home">خانه</string>
+    <string name="invite">معرفی به دوستان</string>
+    <string name="about_us">درباره ما</string>
+    <string name="setting">تنظیمات</string>
+    <string name="download">دانلودها</string>
+    <string name="fav">علاقه\u200cمندی ها</string>
+    <string name="review">مرور</string>
+    <string name="exercise">تمرین</string>
 </resources>

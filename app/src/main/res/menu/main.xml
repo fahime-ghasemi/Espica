@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:id="@+id/nav_fav"
+              android:title="@string/fav" />
+        <item android:id="@+id/nav_download"
+              android:title="@string/download" />
+        <item android:id="@+id/nav_setting"
+              android:title="@string/setting" />
+    <item android:id="@+id/nav_about_us"
+          android:title="@string/about_us" />
+    <item android:id="@+id/nav_invite"
+          android:title="@string/invite" />
+</menu>

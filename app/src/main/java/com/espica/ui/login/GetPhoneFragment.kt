@@ -1,4 +1,4 @@
-package com.espica.ui
+package com.espica.ui.login
 
 
 import android.os.Bundle
@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.espica.R
+import kotlinx.android.synthetic.main.fragment_get_phone.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,7 +21,7 @@ private const val ARG_PARAM2 = "param2"
 class GetPhoneFragment : Fragment() {
 
     companion object {
-        fun newInstance():GetPhoneFragment
+        fun newInstance(): GetPhoneFragment
         {
             return GetPhoneFragment()
         }
@@ -31,6 +31,13 @@ class GetPhoneFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_get_phone,container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        send.setOnClickListener {
+
+        }
     }
 
 

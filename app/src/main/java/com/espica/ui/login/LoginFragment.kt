@@ -1,4 +1,4 @@
-package com.espica.ui
+package com.espica.ui.login
 
 
 import android.content.Context
@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.espica.R
-import android.util.Log
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -20,7 +19,7 @@ class LoginFragment : Fragment() {
 
     lateinit var listener: LoginActivityListener
     companion object {
-        fun newInstance():LoginFragment
+        fun newInstance(): LoginFragment
         {
             return LoginFragment()
         }

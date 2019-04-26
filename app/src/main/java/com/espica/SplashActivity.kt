@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.espica.data.SettingManager
+import com.espica.ui.login.LoginActivity
 
 class SplashActivity : AppCompatActivity() {
 
@@ -13,9 +14,11 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         settingManager = SettingManager(this)
 //        setContentView(R.layout.activity_splash)
-        if(settingManager.isLogin())
-            goToLogin()
-        else goToLogin()
+//        if(!settingManager.isLogin())
+//            goToLogin()
+//        else goToMain()
+        goToMain()
+        finish()
     }
 
     fun goToMain()

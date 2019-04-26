@@ -1,4 +1,4 @@
-package com.espica.ui
+package com.espica.ui.login
 
 interface LoginActivityListener {
     fun onLoginWithPhone()

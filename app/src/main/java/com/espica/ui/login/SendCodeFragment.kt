@@ -1,4 +1,4 @@
-package com.espica.ui
+package com.espica.ui.login
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +10,7 @@ import com.espica.R
 class SendCodeFragment : Fragment() {
 
     companion object {
-        fun newInstance():SendCodeFragment
+        fun newInstance(): SendCodeFragment
         {
             return SendCodeFragment()
         }
