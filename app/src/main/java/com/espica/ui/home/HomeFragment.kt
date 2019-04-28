@@ -29,7 +29,7 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListener?.onNewFragmentAttached(0)
+        mListener?.onNewFragmentAttached(2)
         presenter.view = this
         presenter.loadVideos()
 

@@ -1,8 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:orientation="vertical"
               android:background="@android:color/darker_gray"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+            android:id="@+id/card"
+            android:orientation="vertical"
+            android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:layout_marginTop="24dp" app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="24dp"
+                  android:layout_marginStart="24dp" android:layout_marginBottom="24dp"
+                  app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="24dp" android:layout_marginRight="24dp">
+
+        <ViewFlipper
+                android:id="@+id/simpleViewFlipper"
+                android:addStatesFromChildren="true"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp">
+
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:background="@android:color/holo_red_dark"
+                    android:layout_height="match_parent"
+                    android:text="First TextView" />
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/holo_blue_bright"
+                    android:text="Second TextView" />
+
+        </ViewFlipper >
+
+        <Button android:id="@+id/btn1"
+
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

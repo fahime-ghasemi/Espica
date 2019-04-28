@@ -28,7 +28,7 @@ class ExerciseFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListener?.onNewFragmentAttached(2)
+        mListener?.onNewFragmentAttached(0)
         presenter.view = this
 
     }
