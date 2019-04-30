@@ -1,17 +1,12 @@
 package com.espica.ui.home
 
-import android.animation.Animator
 import android.animation.AnimatorInflater
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
-import android.widget.ViewAnimator
 import com.espica.BaseFragment
 import com.espica.EspicaApp
 import com.espica.R
 import com.espica.data.network.ApiClient
-import com.espica.tools.AnimationFactory
 import kotlinx.android.synthetic.main.fragment_review.*
 import kotlinx.android.synthetic.main.loading.*
 
@@ -43,49 +38,34 @@ class ReviewFragment : BaseFragment(), ExerciseContract.View {
         mListener?.onNewFragmentAttached(1)
         presenter.view = this
         changeCameraDistance()
-//        val animationIn = AnimationUtils.loadAnimation(context, R.anim.flipper_right_in)
-//        val animationOut = AnimationUtils.loadAnimation(context,R.anim.flipper_left_out)
 
-        val animationIn = AnimatorInflater.loadAnimator(context, com.espica.R.animator.in_animation)
-        val animationOut = AnimatorInflater.loadAnimator(context, com.espica.R.animator.out_animation)
+        prepareCardAnim()
 
-        val animationIn2 = AnimatorInflater.loadAnimator(context, com.espica.R.animator.in_animation2)
-        val animationOut2 = AnimatorInflater.loadAnimator(context, com.espica.R.animator.out_animation2)
+    }
 
-//        simpleViewFlipper.inAnimation = animationIn as ObjectAnimator
-//        simpleViewFlipper.outAnimation = animationOut
-        var flag= false
-        btn1.setOnClickListener {
-//            if(flag) {
-//                simpleViewFlipper.showNext()
-//                flag = true
-//            }
-//            else
-//            {
-//                flag = false
-//                simpleViewFlipper.showPrevious()
-//            }
-//
-//            AnimationFactory.flipTransition(simpleViewFlipper as ViewAnimator?, AnimationFactory.FlipDirection.LEFT_RIGHT,300);
-            //todo hamon cart flip haye male fragment ro estefade mikonam
+    private fun prepareCardAnim() {
+        val flipLeftIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_left_in)
+        val flipLeftOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_left_out)
+
+        val flipRightIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_in)
+        val flipRightOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_out)
+
+        cardContainer.setOnClickListener {
             if (!mIsBackVisible) {
-                animationOut.setTarget(cartFront);
-                animationIn.setTarget(cartBack);
-                animationOut.start();
-                animationIn.start();
-                mIsBackVisible = true;
+                flipLeftOut.setTarget(cartFront)
+                flipLeftIn.setTarget(cartBack)
+                flipLeftOut.start()
+                flipLeftIn.start()
+                mIsBackVisible = true
             } else {
-                animationOut2.setTarget(cartBack);
-                animationIn2.setTarget(cartFront);
-                animationOut2.start();
-                animationIn2.start();
-                mIsBackVisible = false;
+                flipRightIn.setTarget(cartFront)
+                flipRightOut.setTarget(cartBack)
+                flipRightIn.start()
+                flipRightOut.start()
+                mIsBackVisible = false
             }
 
         }
-
-
-
     }
 
     private fun changeCameraDistance() {
