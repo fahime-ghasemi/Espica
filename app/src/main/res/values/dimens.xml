@@ -2,4 +2,7 @@
 <resources>
     <dimen name="card_flip_time_half">50</dimen>
     <dimen name="card_flip_time_full">100</dimen>
+    <dimen name="grid_cell_distance">50dp</dimen>
+    <dimen name="card_width">100dp</dimen>
+    <dimen name="card_padding">10dp</dimen>
 </resources>

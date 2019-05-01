@@ -9,6 +9,11 @@ import android.widget.EditText
 
 class Utils
 {
+    companion object {
+        fun convertDpToPx(context: Context, dp: Float): Float {
+            return dp * context.getResources().getDisplayMetrics().density
+        }
+    }
 
     fun hideKeyboard(activity: Activity) {
         // Check if no view has focus:
@@ -36,4 +41,5 @@ class Utils
             inputManager.showSoftInput(editView, InputMethodManager.SHOW_IMPLICIT)
         }
     }
+
 }
