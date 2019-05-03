@@ -9,6 +9,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.espica.data.model.MenuItem
 import com.espica.ui.home.ExerciseFragment
 import com.espica.ui.adapter.MenuAdapter
+import com.espica.ui.dialog.DialogFragment
 import com.espica.ui.home.HomeFragment
 import com.espica.ui.home.ReviewFragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -54,6 +55,10 @@ class MainActivity : AppCompatActivity(), MainActivityListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
         listViewMenu.adapter = MenuAdapter(this, menuItems)
+        filter.setOnClickListener {
+            val dialogFragment = DialogFragment()
+            dialogFragment.show(supportFragmentManager,null)
+        }
     }
 
     private fun loadFragment(tab: Int) {

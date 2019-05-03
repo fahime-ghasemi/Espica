@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:padding="20dp"
+              android:layout_height="wrap_content">
+    <TextView android:layout_width="wrap_content"
+              android:text="@string/advance"
+              android:fontFamily="@font/iran_sans_fa_num_medium"
+              android:layout_gravity="center"
+              android:layout_height="wrap_content"/>
+    <TextView android:layout_width="wrap_content"
+              android:text="@string/intermediate"
+              android:fontFamily="@font/iran_sans_fa_num_medium"
+              android:layout_gravity="center"
+              android:layout_height="wrap_content"/>
+    <TextView android:layout_width="wrap_content"
+              android:text="@string/beginner"
+              android:fontFamily="@font/iran_sans_fa_num_medium"
+              android:layout_gravity="center"
+              android:layout_height="wrap_content"/>
+</LinearLayout>

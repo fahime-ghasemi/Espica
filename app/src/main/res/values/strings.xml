@@ -16,4 +16,7 @@
     <string name="fav">علاقه\u200cمندی ها</string>
     <string name="review">مرور</string>
     <string name="exercise">تمرین</string>
+    <string name="advance"><![CDATA[ پیشرفته]]></string>
+    <string name="intermediate">متوسط</string>
+    <string name="beginner">مبتدی</string>
 </resources>
