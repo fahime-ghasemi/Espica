@@ -37,6 +37,11 @@ import java.util.ArrayList
 
 class PlayerActivity : AppCompatActivity() {
 
+    var exoPlayer = ExoPlayerFactory.newSimpleInstance(
+        Activity@ this,
+        DefaultTrackSelector()
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
@@ -44,7 +49,19 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        initializePlayer();
+        initializePlayer()
+    }
+
+    override fun onDestroy() {
+        releasePlayer()
+        super.onDestroy()
+    }
+
+
+    private fun releasePlayer() {
+        exoPlayer.stop()
+        exoPlayer.release()
+        exoPlayer = null
     }
 
     private fun initializePlayer() {
@@ -86,10 +103,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
             .createMediaSource(videoFileUri)
-        val exoPlayer = ExoPlayerFactory.newSimpleInstance(
-            Activity@ this,
-            DefaultTrackSelector()
-        )
+
         val simpleExoPlayerView = findViewById<SimpleExoPlayerView>(R.id.exoplayer)
         val webView = findViewById<WebView>(R.id.webView)
         simpleExoPlayerView.setPlayer(exoPlayer)
@@ -98,13 +112,11 @@ class PlayerActivity : AppCompatActivity() {
 
         val subtitleView = findViewById<SubtitleView>(R.id.subtitle)
 
-        val cueList = ArrayList<Cue>()
 
         exoPlayer.addTextOutput(object : TextRenderer.Output
         {
             override fun onCues(cues: MutableList<Cue>?) {
                 if(subtitleView!=null){
-                    subtitleView.onCues(cues)
                     if(cues!=null && cues.size>0) {
                         Log.e("fahi",  cues.last().positionAnchor.toString())
                         Log.e("fahi",  cues.last().position.toString())
@@ -112,18 +124,21 @@ class PlayerActivity : AppCompatActivity() {
                         Log.e("fahi",  cues.last().lineAnchor.toString())
                         Log.e("fahi",  cues.last().text.toString())
 
-//                        val cue = cues.last()
-//                        cueList.add(cue)
-//                        subtitleView.setCues(cueList)
+                        subtitleView.setCues(cues)
                     }
                 }
             }
         })
         webView.loadUrl("file:///android_asset/movie.vtt")
+//        val textFormat = Format.createTextSampleFormat(
+//            null, MimeTypes.APPLICATION_SUBRIP,null,
+//            Format.NO_VALUE, C.SELECTION_FLAG_DEFAULT,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
+//        )
         val textFormat = Format.createTextSampleFormat(
-            null, MimeTypes.APPLICATION_SUBRIP,null,
-            Format.NO_VALUE, C.SELECTION_FLAG_DEFAULT,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
+            null, MimeTypes.TEXT_VTT,null,
+            Format.NO_VALUE, Format.NO_VALUE,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
         )
+
         val subtitleSource = SingleSampleMediaSource(Uri.parse("asset:///movie.vtt"), dataSourceFactory, textFormat, C.TIME_UNSET)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
