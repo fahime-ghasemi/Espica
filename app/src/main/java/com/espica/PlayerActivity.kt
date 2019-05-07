@@ -37,19 +37,17 @@ import java.util.ArrayList
 
 class PlayerActivity : AppCompatActivity() {
 
-    var exoPlayer = ExoPlayerFactory.newSimpleInstance(
-        Activity@ this,
-        DefaultTrackSelector()
-    )
+    var exoPlayer :SimpleExoPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
-    }
-
-    override fun onStart() {
-        super.onStart()
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(
+            Activity@ this,
+            DefaultTrackSelector()
+        )
         initializePlayer()
+
     }
 
     override fun onDestroy() {
@@ -59,8 +57,8 @@ class PlayerActivity : AppCompatActivity() {
 
 
     private fun releasePlayer() {
-        exoPlayer.stop()
-        exoPlayer.release()
+        exoPlayer!!.stop()
+        exoPlayer!!.release()
         exoPlayer = null
     }
 
@@ -108,12 +106,12 @@ class PlayerActivity : AppCompatActivity() {
         val webView = findViewById<WebView>(R.id.webView)
         simpleExoPlayerView.setPlayer(exoPlayer)
         simpleExoPlayerView.subtitleView.setVisibility(View.GONE);
-        exoPlayer.playWhenReady = true
+        exoPlayer!!.playWhenReady = true
 
         val subtitleView = findViewById<SubtitleView>(R.id.subtitle)
 
 
-        exoPlayer.addTextOutput(object : TextRenderer.Output
+        exoPlayer!!.addTextOutput(object : TextRenderer.Output
         {
             override fun onCues(cues: MutableList<Cue>?) {
                 if(subtitleView!=null){
@@ -142,7 +140,7 @@ class PlayerActivity : AppCompatActivity() {
         val subtitleSource = SingleSampleMediaSource(Uri.parse("asset:///movie.vtt"), dataSourceFactory, textFormat, C.TIME_UNSET)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
-        exoPlayer.prepare(mergedSource)
+        exoPlayer!!.prepare(mergedSource)
 
     }
 }
