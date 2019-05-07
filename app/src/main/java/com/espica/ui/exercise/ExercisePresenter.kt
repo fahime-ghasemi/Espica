@@ -17,6 +17,7 @@ class ExercisePresenter(val apiClient: ApiClient) : ExerciseContract.Presenter {
 //            }
 //        }
 //        ))
+//        view?.show
     }
 
     override fun destroy() {

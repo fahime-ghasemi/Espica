@@ -54,4 +54,5 @@ dependencies {
 //    implementation project(path: ':exoplayer-library-ui')
     implementation 'com.google.android.exoplayer:exoplayer-core:2.9.6'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.9.6'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
 }

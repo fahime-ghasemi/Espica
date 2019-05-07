@@ -9,6 +9,6 @@ interface ExerciseContract {
     }
 
     interface Presenter : BasePresenter {
-        fun loadVideos();
+        fun loadVideos()
     }
 }

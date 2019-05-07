@@ -3,10 +3,12 @@ package com.espica.ui.home
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.espica.BaseFragment
 import com.espica.EspicaApp
 import com.espica.R
 import com.espica.data.network.ApiClient
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading.*
 
 class HomeFragment : BaseFragment(), ExerciseContract.View {
@@ -29,14 +31,17 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initRecyclerView()
         mListener?.onNewFragmentAttached(2)
         presenter.view = this
         presenter.loadVideos()
 
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    private fun initRecyclerView() {
+        val linearLayoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager =linearLayoutManager
+        recyclerView.addOnScrollListener(ScrollListener(linearLayoutManager))
 
     }
 
@@ -48,4 +53,10 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
         loading.visibility = View.VISIBLE
     }
 
+}
+
+class ScrollListener(private val mLinearLayoutManager: LinearLayoutManager) : EndlessRecyclerOnScrollListener(mLinearLayoutManager) {
+    override fun onLoadMore(current_page: Int) {
+
+    }
 }
