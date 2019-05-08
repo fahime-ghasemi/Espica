@@ -1,18 +1,21 @@
 package com.espica.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.espica.BaseFragment
 import com.espica.EspicaApp
+import com.espica.PlayerActivity
 import com.espica.R
+import com.espica.data.BundleKeys
 import com.espica.data.model.Video
 import com.espica.data.network.ApiClient
 import com.espica.ui.adapter.VideoAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading.*
 
-class HomeFragment : BaseFragment(), HomeContract.View {
+class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
 
     lateinit var presenter: HomePresenter
     override val layoutResId = R.layout.fragment_home
@@ -43,7 +46,7 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         val linearLayoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.addOnScrollListener(ScrollListener(linearLayoutManager))
-        recyclerView.adapter = VideoAdapter(ArrayList())
+        recyclerView.adapter = VideoAdapter(ArrayList(),this)
 
     }
 
@@ -61,6 +64,12 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         (recyclerView.adapter as VideoAdapter).addItmes(videoList)
         recyclerView.adapter!!.notifyItemInserted(position)
 
+    }
+
+    override fun onPlayVideoClick(video: Video) {
+        val intent = Intent(context, PlayerActivity::class.java)
+        intent.putExtra(BundleKeys.VIDEO,video)
+        startActivity(intent)
     }
 
     inner class ScrollListener(mLinearLayoutManager: LinearLayoutManager) :

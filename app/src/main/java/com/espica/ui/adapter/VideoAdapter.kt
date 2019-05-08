@@ -5,9 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.espica.data.model.Video
+import com.espica.ui.home.VideoItemListener
 import kotlinx.android.synthetic.main.item_video.view.*
 
-class VideoAdapter(private val videoList: ArrayList<Video>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class VideoAdapter(private val videoList: ArrayList<Video>,private val listener: VideoItemListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val ITEM_TYPE = 1
     val PROGRESS_TYPE = 2
@@ -17,6 +18,7 @@ class VideoAdapter(private val videoList: ArrayList<Video>) : RecyclerView.Adapt
     {
         val title = view.videoTitle
         val duration = view.videoDuration
+
     }
 
     class ProgressViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -40,6 +42,9 @@ class VideoAdapter(private val videoList: ArrayList<Video>) : RecyclerView.Adapt
             val video = videoList[position]
             val videoViewHolder = holder as VideoViewHolder
             videoViewHolder.title.text = video.title
+            videoViewHolder.title.setOnClickListener {
+                listener.onPlayVideoClick(video)
+            }
         }
 
     }
