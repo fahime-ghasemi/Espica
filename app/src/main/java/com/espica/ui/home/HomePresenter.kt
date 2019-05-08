@@ -5,9 +5,9 @@ import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.response.DefaultResponse
 import io.reactivex.disposables.CompositeDisposable
 
-class HomePresenter(val apiClient: ApiClient) : ExerciseContract.Presenter {
+class HomePresenter(val apiClient: ApiClient) : HomeContract.Presenter {
     val compositeDisposable = CompositeDisposable()
-    var view: ExerciseContract.View? = null
+    var view: HomeContract.View? = null
 
     override fun loadVideos() {
         view?.showLoading()
@@ -22,4 +22,6 @@ class HomePresenter(val apiClient: ApiClient) : ExerciseContract.Presenter {
     override fun destroy() {
         compositeDisposable.clear()
     }
+
+
 }

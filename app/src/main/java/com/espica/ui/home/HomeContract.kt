@@ -9,6 +9,7 @@ interface HomeContract {
     }
 
     interface Presenter : BasePresenter {
-        fun loadVideos();
+        fun loadVideos()
+//        fun loadNextVideos()
     }
 }

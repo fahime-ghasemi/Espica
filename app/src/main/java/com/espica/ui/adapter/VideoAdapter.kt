@@ -10,6 +10,7 @@ class VideoAdapter(val videoList: List<Video>) : RecyclerView.Adapter<RecyclerVi
 
     val ITEM_TYPE = 1
     val PROGRESS_TYPE = 2
+    var showProgress = false
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
@@ -26,7 +27,7 @@ class VideoAdapter(val videoList: List<Video>) : RecyclerView.Adapter<RecyclerVi
     }
 
     override fun getItemCount(): Int {
-        return videoList.size + 1
+        return if (showProgress) videoList.size + 1 else videoList.size
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {

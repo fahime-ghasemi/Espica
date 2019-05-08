@@ -8,13 +8,13 @@ import com.espica.BaseFragment
 import com.espica.EspicaApp
 import com.espica.R
 import com.espica.data.network.ApiClient
+import com.espica.ui.adapter.VideoAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading.*
 
-class HomeFragment : BaseFragment(), ExerciseContract.View {
+class HomeFragment : BaseFragment(), HomeContract.View {
 
-    lateinit var presenter: ExercisePresenter
-
+    lateinit var presenter: HomePresenter
     override val layoutResId = R.layout.fragment_home
 
     companion object {
@@ -25,7 +25,7 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = ExercisePresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
+        presenter = HomePresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
 
     }
 
@@ -41,7 +41,8 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
     private fun initRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager =linearLayoutManager
-        recyclerView.addOnScrollListener(ScrollListener(linearLayoutManager))
+        recyclerView.addOnScrollListener(ScrollListener(linearLayoutManager,presenter))
+        recyclerView.adapter = VideoAdapter(ArrayList())
 
     }
 
@@ -55,8 +56,9 @@ class HomeFragment : BaseFragment(), ExerciseContract.View {
 
 }
 
-class ScrollListener(private val mLinearLayoutManager: LinearLayoutManager) : EndlessRecyclerOnScrollListener(mLinearLayoutManager) {
+class ScrollListener(mLinearLayoutManager: LinearLayoutManager,var presenter: HomePresenter) : EndlessRecyclerOnScrollListener(mLinearLayoutManager) {
     override fun onLoadMore(current_page: Int) {
-
+        presenter.loadNextVideos()
     }
 }
+
