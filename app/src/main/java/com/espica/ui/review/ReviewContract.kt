@@ -9,6 +9,5 @@ interface ReviewContract {
     }
 
     interface Presenter : BasePresenter {
-        fun loadVideos();
     }
 }

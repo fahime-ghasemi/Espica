@@ -1,12 +1,12 @@
 package com.espica.ui.home
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.espica.BaseFragment
 import com.espica.EspicaApp
 import com.espica.R
+import com.espica.data.model.Video
 import com.espica.data.network.ApiClient
 import com.espica.ui.adapter.VideoAdapter
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -16,6 +16,7 @@ class HomeFragment : BaseFragment(), HomeContract.View {
 
     lateinit var presenter: HomePresenter
     override val layoutResId = R.layout.fragment_home
+    var hasMoreVideo = true
 
     companion object {
         fun newInstance(): HomeFragment {
@@ -40,8 +41,8 @@ class HomeFragment : BaseFragment(), HomeContract.View {
 
     private fun initRecyclerView() {
         val linearLayoutManager = LinearLayoutManager(context)
-        recyclerView.layoutManager =linearLayoutManager
-        recyclerView.addOnScrollListener(ScrollListener(linearLayoutManager,presenter))
+        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.addOnScrollListener(ScrollListener(linearLayoutManager))
         recyclerView.adapter = VideoAdapter(ArrayList())
 
     }
@@ -54,11 +55,22 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         loading.visibility = View.VISIBLE
     }
 
-}
+    override fun showVideos(videoList: ArrayList<Video>, hasMoreVideo: Boolean) {
+        this.hasMoreVideo = hasMoreVideo
+        val position = recyclerView.adapter!!.itemCount
+        (recyclerView.adapter as VideoAdapter).addItmes(videoList)
+        recyclerView.adapter!!.notifyItemInserted(position)
 
-class ScrollListener(mLinearLayoutManager: LinearLayoutManager,var presenter: HomePresenter) : EndlessRecyclerOnScrollListener(mLinearLayoutManager) {
-    override fun onLoadMore(current_page: Int) {
-        presenter.loadNextVideos()
+    }
+
+    inner class ScrollListener(mLinearLayoutManager: LinearLayoutManager) :
+        EndlessRecyclerOnScrollListener(mLinearLayoutManager) {
+        override fun onLoadMore(current_page: Int) {
+            if (hasMoreVideo)
+                presenter.loadVideos(true)
+        }
     }
 }
+
+
 

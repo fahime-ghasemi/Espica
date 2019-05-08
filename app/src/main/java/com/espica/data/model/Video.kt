@@ -1,4 +1,3 @@
 package com.espica.data.model
 
-class Video {
-}
+class Video(val id:String,val title:String)

@@ -2,14 +2,15 @@ package com.espica.ui.home
 
 import com.espica.BasePresenter
 import com.espica.BaseView
+import com.espica.data.model.Video
 
 interface HomeContract {
     interface View : BaseView {
-//        showAllVideos()
+        fun showVideos(videoList: ArrayList<Video>, hasMoreVideo: Boolean)
     }
 
     interface Presenter : BasePresenter {
-        fun loadVideos()
+        fun loadVideos(loadNextVideos: Boolean = false)
 //        fun loadNextVideos()
     }
 }

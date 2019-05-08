@@ -14,9 +14,9 @@ import kotlinx.android.synthetic.main.loading.*
 
 
 
-class ReviewFragment : BaseFragment(), ExerciseContract.View {
+class ReviewFragment : BaseFragment(), ReviewContract.View {
 
-    lateinit var presenter: ExercisePresenter
+    lateinit var presenter: ReviewPresenter
     private var mIsBackVisible = false
 
     override val layoutResId = com.espica.R.layout.fragment_review
@@ -29,7 +29,7 @@ class ReviewFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = ExercisePresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
+        presenter = ReviewPresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
 
     }
 
