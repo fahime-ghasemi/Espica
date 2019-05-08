@@ -1,19 +1,17 @@
 package com.espica
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TabHost
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.espica.data.model.MenuItem
-import com.espica.ui.home.ExerciseFragment
 import com.espica.ui.adapter.MenuAdapter
+import com.espica.ui.home.ExerciseFragment
 import com.espica.ui.home.HomeFragment
 import com.espica.ui.home.ReviewFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar_main.*
-import kotlinx.android.synthetic.main.toolbar_main.view.*
 
 class MainActivity : AppCompatActivity(), MainActivityListener {
     var baseFragment: BaseFragment? = null
@@ -54,6 +52,9 @@ class MainActivity : AppCompatActivity(), MainActivityListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
         listViewMenu.adapter = MenuAdapter(this, menuItems)
+        filter.setOnClickListener {
+
+        }
     }
 
     private fun loadFragment(tab: Int) {
