@@ -9,20 +9,21 @@ import com.espica.data.model.MenuItem
 import com.espica.ui.adapter.MenuAdapter
 import com.espica.ui.home.ExerciseFragment
 import com.espica.ui.home.HomeFragment
+import com.espica.ui.home.OnMenuItemClickListener
 import com.espica.ui.home.ReviewFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar_main.*
 
-class MainActivity : AppCompatActivity(), MainActivityListener {
+class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickListener {
     var baseFragment: BaseFragment? = null
 
     val menuItems = listOf(
-        MenuItem(R.string.fav, R.drawable.ic_favorite),
-        MenuItem(R.string.download, R.drawable.ic_download),
-        MenuItem(R.string.setting, R.drawable.ic_settings),
-        MenuItem(R.string.about_us, R.drawable.ic_about_us),
+        MenuItem(1, R.string.fav, R.drawable.ic_favorite),
+        MenuItem(2, R.string.download, R.drawable.ic_download),
+        MenuItem(3, R.string.setting, R.drawable.ic_settings),
+        MenuItem(4, R.string.about_us, R.drawable.ic_about_us),
         MenuItem
-            (R.string.invite, R.drawable.ic_contact_us)
+            (5, R.string.invite, R.drawable.ic_contact_us)
     )
 
 
@@ -51,9 +52,17 @@ class MainActivity : AppCompatActivity(), MainActivityListener {
         menu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
-        listViewMenu.adapter = MenuAdapter(this, menuItems)
+        listViewMenu.adapter = MenuAdapter(this, menuItems, this)
         filter.setOnClickListener {
 
+        }
+    }
+
+    override fun OnMenuItemClick(item: MenuItem) {
+        when (item.id) {
+            1 -> {
+
+            }
         }
     }
 
