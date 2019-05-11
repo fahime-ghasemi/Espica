@@ -64,6 +64,8 @@ class ReviewFragment : BaseFragment(), ReviewContract.View {
 //
 //        }
 
+
+
         goToBack.setOnClickListener {
             flipLeftOut.setTarget(cartFront)
             flipLeftIn.setTarget(cartBack)

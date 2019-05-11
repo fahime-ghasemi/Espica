@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.espica.BaseFragment
 import com.espica.EspicaApp
-import com.espica.PlayerActivity
+import com.espica.ui.player.PlayerActivity
 import com.espica.R
 import com.espica.data.BundleKeys
 import com.espica.data.model.Video
