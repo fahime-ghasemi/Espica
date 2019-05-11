@@ -5,10 +5,9 @@ import com.espica.BaseView
 
 interface ExerciseContract {
     interface View : BaseView {
-//        showAllVideos()
     }
 
     interface Presenter : BasePresenter {
-        fun loadVideos();
+
     }
 }

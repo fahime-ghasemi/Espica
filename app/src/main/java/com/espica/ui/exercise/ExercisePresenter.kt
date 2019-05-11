@@ -9,15 +9,6 @@ class ExercisePresenter(val apiClient: ApiClient) : ExerciseContract.Presenter {
     val compositeDisposable = CompositeDisposable()
     var view: ExerciseContract.View? = null
 
-    override fun loadVideos() {
-        view?.showLoading()
-//        compositeDisposable.add(apiClient.allVideos.subscribeWith(object : MyDisposableObserver<DefaultResponse>() {
-//            override fun onSuccess(t: DefaultResponse) {
-//                view?.hideLoading()
-//            }
-//        }
-//        ))
-    }
 
     override fun destroy() {
         compositeDisposable.clear()

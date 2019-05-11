@@ -19,4 +19,6 @@
     <string name="advance"><![CDATA[ پیشرفته]]></string>
     <string name="intermediate">متوسط</string>
     <string name="beginner">مبتدی</string>
+    <string name="know">بلدم</string>
+    <string name="dont_know">بلد نیستم</string>
 </resources>

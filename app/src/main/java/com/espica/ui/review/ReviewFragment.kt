@@ -11,12 +11,9 @@ import kotlinx.android.synthetic.main.fragment_review.*
 import kotlinx.android.synthetic.main.loading.*
 
 
+class ReviewFragment : BaseFragment(), ReviewContract.View {
 
-
-
-class ReviewFragment : BaseFragment(), ExerciseContract.View {
-
-    lateinit var presenter: ExercisePresenter
+    lateinit var presenter: ReviewPresenter
     private var mIsBackVisible = false
 
     override val layoutResId = com.espica.R.layout.fragment_review
@@ -29,7 +26,7 @@ class ReviewFragment : BaseFragment(), ExerciseContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = ExercisePresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
+        presenter = ReviewPresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
 
     }
 
@@ -50,21 +47,34 @@ class ReviewFragment : BaseFragment(), ExerciseContract.View {
         val flipRightIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_in)
         val flipRightOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_out)
 
-        cardContainer.setOnClickListener {
-            if (!mIsBackVisible) {
-                flipLeftOut.setTarget(cartFront)
-                flipLeftIn.setTarget(cartBack)
-                flipLeftOut.start()
-                flipLeftIn.start()
-                mIsBackVisible = true
-            } else {
-                flipRightIn.setTarget(cartFront)
-                flipRightOut.setTarget(cartBack)
-                flipRightIn.start()
-                flipRightOut.start()
-                mIsBackVisible = false
-            }
+//        cardContainer.setOnClickListener {
+//            if (!mIsBackVisible) {
+//                flipLeftOut.setTarget(cartFront)
+//                flipLeftIn.setTarget(cartBack)
+//                flipLeftOut.start()
+//                flipLeftIn.start()
+//                mIsBackVisible = true
+//            } else {
+//                flipRightIn.setTarget(cartFront)
+//                flipRightOut.setTarget(cartBack)
+//                flipRightIn.start()
+//                flipRightOut.start()
+//                mIsBackVisible = false
+//            }
+//
+//        }
 
+        goToBack.setOnClickListener {
+            flipLeftOut.setTarget(cartFront)
+            flipLeftIn.setTarget(cartBack)
+            flipLeftOut.start()
+            flipLeftIn.start()
+        }
+        goToFront.setOnClickListener {
+            flipRightIn.setTarget(cartFront)
+            flipRightOut.setTarget(cartBack)
+            flipRightIn.start()
+            flipRightOut.start()
         }
     }
 

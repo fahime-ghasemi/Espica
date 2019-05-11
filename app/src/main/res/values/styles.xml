@@ -13,5 +13,18 @@
         <!-- Optional, on Android 5+ you can modify the colorPrimaryDark color to match the windowBackground color for further branding-->
         <!-- <item name="colorPrimaryDark">@android:color/white</item> -->
     </style>
+    <style name="Button">
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:fontFamily">@font/iran_sans_fa_num_medium</item>
+        <item name="android:background">@drawable/bg_button</item>
+    </style>
+    <style name="Text">
+        <item name="android:fontFamily">@font/iran_sans_fa_num_medium</item>
+        <item name="android:textSize">13sp</item>
+    </style>
 
 </resources>
