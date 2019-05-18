@@ -21,11 +21,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/subtitle"
-                android:visibility="visible"
+                android:visibility="gone"
         />
         <WebView android:layout_width="match_parent"
                  android:id="@+id/webView"
-                 android:visibility="gone"
+                 android:visibility="visible"
                  android:layout_height="match_parent"></WebView>
 
     </FrameLayout>

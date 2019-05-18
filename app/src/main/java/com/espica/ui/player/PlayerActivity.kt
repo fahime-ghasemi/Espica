@@ -60,7 +60,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun initializePlayer() {
-        val videoFileUri = Uri.parse("asset:///movie.mp4")
+        val videoFileUri = Uri.parse("asset:///6_tags.mp4")
         val dataSourceFactory: DataSource.Factory = DataSource.Factory {
             AssetDataSource(
                 this@PlayerActivity
@@ -76,7 +76,6 @@ class PlayerActivity : AppCompatActivity() {
         exoPlayer!!.playWhenReady = true
 
         val subtitleView = findViewById<SubtitleView>(R.id.subtitle)
-
 
         exoPlayer!!.addTextOutput(object : TextRenderer.Output
         {
@@ -94,17 +93,17 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         })
-        webView.loadUrl("file:///android_asset/movie.vtt")
+        webView.loadUrl("file:///android_asset/6_tags.html")
 //        val textFormat = Format.createTextSampleFormat(
 //            null, MimeTypes.APPLICATION_SUBRIP,null,
 //            Format.NO_VALUE, C.SELECTION_FLAG_DEFAULT,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
 //        )
         val textFormat = Format.createTextSampleFormat(
-            null, MimeTypes.TEXT_VTT,null,
+            null, MimeTypes.APPLICATION_SUBRIP,null,
             Format.NO_VALUE, Format.NO_VALUE,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
         )
 
-        val subtitleSource = SingleSampleMediaSource(Uri.parse("asset:///movie.vtt"), dataSourceFactory, textFormat, C.TIME_UNSET)
+        val subtitleSource = SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactory, textFormat, C.TIME_UNSET)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)
