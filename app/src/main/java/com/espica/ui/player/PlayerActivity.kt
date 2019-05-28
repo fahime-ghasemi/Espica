@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import android.net.Uri
 import android.util.Log
+import android.view.ActionMode
 import android.view.View
 import android.webkit.WebView
 import com.espica.R
@@ -22,15 +23,23 @@ import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.text.Cue
 import com.google.android.exoplayer2.text.TextRenderer
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
+import android.view.MenuItem
+import android.webkit.JavascriptInterface
+import android.webkit.ValueCallback
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_player.*
+import kotlin.math.log
 
 
 class PlayerActivity : AppCompatActivity() {
 
-    var exoPlayer :SimpleExoPlayer? = null
+    private var exoPlayer: SimpleExoPlayer? = null
+    private var mActionMode: ActionMode? = null
+    private var sentenceCounter = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_player)
+        setContentView(com.espica.R.layout.activity_player)
         exoPlayer = ExoPlayerFactory.newSimpleInstance(
             Activity@ this,
             DefaultTrackSelector()
@@ -43,8 +52,40 @@ class PlayerActivity : AppCompatActivity() {
     private fun initializeUi() {
         more.setOnClickListener {
             val playerBottomSheet = PlayerBottomSheet()
-            playerBottomSheet.show(supportFragmentManager,null)
+            playerBottomSheet.show(supportFragmentManager, null)
         }
+    }
+
+    override fun onActionModeStarted(mode: ActionMode?) {
+        if (mActionMode == null) {
+            mActionMode = mode
+//            mode?.menu?.add("").menuInfo.
+            mode?.menu?.add(R.string.add_to_litner)
+                ?.setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
+                    override fun onMenuItemClick(item: MenuItem?): Boolean {
+                        addToLitner()
+                        mActionMode?.finish()
+                        return true
+                    }
+                })
+        }
+        super.onActionModeStarted(mode)
+    }
+
+
+    override fun onActionModeFinished(mode: ActionMode?) {
+        mActionMode = null
+        super.onActionModeFinished(mode)
+    }
+
+    private fun addToLitner() {
+        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
+            object : ValueCallback<String> {
+                override fun onReceiveValue(text: String?) {
+                    Toast.makeText(this@PlayerActivity, text, Toast.LENGTH_LONG).show()
+                }
+            })
+
     }
 
     override fun onDestroy() {
@@ -69,44 +110,69 @@ class PlayerActivity : AppCompatActivity() {
         val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
             .createMediaSource(videoFileUri)
 
-        val simpleExoPlayerView = findViewById<SimpleExoPlayerView>(R.id.exoplayer)
-        val webView = findViewById<WebView>(R.id.webView)
-        simpleExoPlayerView.setPlayer(exoPlayer)
-        simpleExoPlayerView.subtitleView.setVisibility(View.GONE);
+//        val simpleExoPlayerView = findViewById<SimpleExoPlayerView>(com.espica.R.id.exoplayer)
+//        val webView = findViewById<WebView>(com.espica.R.id.webView)
+        simpleExoplayer.setPlayer(exoPlayer)
+        simpleExoplayer.subtitleView.setVisibility(View.GONE);
         exoPlayer!!.playWhenReady = true
 
-        val subtitleView = findViewById<SubtitleView>(R.id.subtitle)
+//        val subtitleView = findViewById<SubtitleView>(com.espica.R.id.subtitle)
 
-        exoPlayer!!.addTextOutput(object : TextRenderer.Output
-        {
+        exoPlayer!!.addTextOutput(object : TextRenderer.Output {
             override fun onCues(cues: MutableList<Cue>?) {
-                if(subtitleView!=null){
-                    if(cues!=null && cues.size>0) {
-                        Log.e("fahi",  cues.last().positionAnchor.toString())
-                        Log.e("fahi",  cues.last().position.toString())
-                        Log.e("fahi",  cues.last().line.toString())
-                        Log.e("fahi",  cues.last().lineAnchor.toString())
-                        Log.e("fahi",  cues.last().text.toString())
+                if (subtitle != null) {
+                    if (cues != null && cues.size > 0) {
+                        Log.e("fahi", cues.last().text.toString())
+                        var jsText = ""
+                        if (sentenceCounter > -1)
+                            jsText = "document.body.children[" + sentenceCounter + "].style = '';"
+                        sentenceCounter++
+                            jsText += "document.body.children[" + sentenceCounter + "].style.fontWeight = 'bold' ;"
 
-                        subtitleView.setCues(cues)
+                        webView.evaluateJavascript(
+                            jsText,
+                            object : ValueCallback<String> {
+                                override fun onReceiveValue(text: String?) {
+                                    Log.e("fahiiiii",text)
+                                }
+                            }
+                        )
+//                        subtitle.setCues(cues)
                     }
                 }
             }
         })
+
         webView.loadUrl("file:///android_asset/6_tags.html")
+        webView.settings.javaScriptEnabled = true
+        webView.addJavascriptInterface(WebAppInterface(), "js")
+
+//        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
+//            object : ValueCallback<String> {
+//                override fun onReceiveValue(text: String?) {
+//                    Toast.makeText(this@PlayerActivity, text, Toast.LENGTH_LONG).show()
+//                }
+//            })
 //        val textFormat = Format.createTextSampleFormat(
 //            null, MimeTypes.APPLICATION_SUBRIP,null,
 //            Format.NO_VALUE, C.SELECTION_FLAG_DEFAULT,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
 //        )
         val textFormat = Format.createTextSampleFormat(
-            null, MimeTypes.APPLICATION_SUBRIP,null,
-            Format.NO_VALUE, Format.NO_VALUE,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
+            null, MimeTypes.APPLICATION_SUBRIP, null,
+            Format.NO_VALUE, Format.NO_VALUE, "en", null, Format.OFFSET_SAMPLE_RELATIVE
         )
 
-        val subtitleSource = SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactory, textFormat, C.TIME_UNSET)
+        val subtitleSource =
+            SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactory, textFormat, C.TIME_UNSET)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)
 
+    }
+
+    open class WebAppInterface {
+        @JavascriptInterface
+        fun getSelectedText(value: String) {
+        }
     }
 }
