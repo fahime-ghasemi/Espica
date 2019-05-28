@@ -127,7 +127,9 @@ class PlayerActivity : AppCompatActivity() {
                         if (sentenceCounter > -1)
                             jsText = "document.body.children[" + sentenceCounter + "].style = '';"
                         sentenceCounter++
-                            jsText += "document.body.children[" + sentenceCounter + "].style.fontWeight = 'bold' ;"
+                            jsText += "var node = document.body.children[" + sentenceCounter + "];" +
+                                    "node.style.fontWeight = 'bold' ;" +
+                                    "window.scrollTo(node.offsetLeft,node.offsetTop);"
 
                         webView.evaluateJavascript(
                             jsText,
@@ -137,6 +139,7 @@ class PlayerActivity : AppCompatActivity() {
                                 }
                             }
                         )
+
 //                        subtitle.setCues(cues)
                     }
                 }
