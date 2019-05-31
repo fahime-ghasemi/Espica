@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initUI()
+        loadFragment(1)
     }
 
     private fun initUI() {

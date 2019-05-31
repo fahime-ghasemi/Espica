@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.widget.Toast
+import com.google.android.exoplayer2.text.TextOutput
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlin.math.log
 
@@ -59,7 +60,6 @@ class PlayerActivity : AppCompatActivity() {
     override fun onActionModeStarted(mode: ActionMode?) {
         if (mActionMode == null) {
             mActionMode = mode
-//            mode?.menu?.add("").menuInfo.
             mode?.menu?.add(R.string.add_to_litner)
                 ?.setOnMenuItemClickListener(object : MenuItem.OnMenuItemClickListener {
                     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -118,10 +118,13 @@ class PlayerActivity : AppCompatActivity() {
 
 //        val subtitleView = findViewById<SubtitleView>(com.espica.R.id.subtitle)
 
-        exoPlayer!!.addTextOutput(object : TextRenderer.Output {
+        exoPlayer!!.addTextOutput(object : TextOutput {
             override fun onCues(cues: MutableList<Cue>?) {
                 if (subtitle != null) {
                     if (cues != null && cues.size > 0) {
+                        Log.e("fahi position",cues.last().position.toString())
+                        Log.e("fahi position anchor",cues.last().toString())
+
                         Log.e("fahi", cues.last().text.toString())
                         var jsText = ""
                         if (sentenceCounter > -1)
@@ -166,7 +169,7 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         val subtitleSource =
-            SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactory, textFormat, C.TIME_UNSET)
+            SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactory, textFormat,5*60*1000)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)
