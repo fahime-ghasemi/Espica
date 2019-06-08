@@ -1,5 +1,8 @@
 package com.espica.data.network.response
 
-class RegisterResponse {
+import com.google.gson.annotations.SerializedName
 
+class RegisterResponse {
+    @SerializedName("key")
+    var key: String? = null
 }

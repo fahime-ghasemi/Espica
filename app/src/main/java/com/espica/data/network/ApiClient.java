@@ -1,22 +1,19 @@
 package com.espica.data.network;
 
-import com.espica.data.network.NetworkApiService;
 import com.espica.data.network.response.DefaultResponse;
+import com.espica.data.network.response.RegisterResponse;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.net.ssl.SSLException;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -25,6 +22,7 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by IT-10 on 10/16/2018.
@@ -62,13 +60,21 @@ public class ApiClient implements Consumer<Throwable> {
         }
     }
 
-    public Observable<DefaultResponse> getAllVideos() {
+    public Observable<DefaultResponse<String>> getAllVideos() {
         return networkApiService.getAllVideos();
     }
 
     @SuppressWarnings("unchecked")
     private <T> ObservableTransformer<T, T> configureApiCallObserver() {
         return (ObservableTransformer<T, T>) apiCallTransformer;
+    }
+
+    @NotNull
+    public Observable<DefaultResponse<RegisterResponse>> registerDevice(String randomUUID) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("device_id",randomUUID);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),jsonObject.toString());
+        return networkApiService.registerDevice(requestBody).compose(configureApiCallObserver());
     }
 
 

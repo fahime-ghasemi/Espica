@@ -6,10 +6,11 @@ import com.espica.BuildConfig
 object Url {
     //192.168.134.11
     //37.130.202.169
-    private val BASE_URL_TEST = "http://66.70.130.225:3010/api/clients/"
-    private val BASE_URL_PRODUCTION = "http://66.70.130.225:3010/api/clients/"
+    private val BASE_URL_TEST = "http://185.86.36.76/api/"
+    private val BASE_URL_PRODUCTION = "http://185.86.36.76/api/"
     val BASE_URL = if (BuildConfig.DEBUG) Url.BASE_URL_TEST else Url.BASE_URL_PRODUCTION
-    const val REGISTER_WITH_PHONE = "{client_id}/register/{nonce}"
-    const val GET_ALL_VIDEOS = "{client_id}/register/{nonce}"
+    const val REGISTER_WITH_PHONE = "registerDevice/device/"
+    const val REGISTER_DEVICE = "register/device/"
+    const val GET_ALL_VIDEOS = "{client_id}/registerDevice/{nonce}"
 
 }

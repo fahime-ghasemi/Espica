@@ -9,16 +9,11 @@ import retrofit2.http.*
 interface NetworkApiService {
 
     @Headers("Accept: application/json")
-    @POST(Url.REGISTER_WITH_PHONE)
-    fun register(
-        @Path(value = Param.CLIENT_ID, encoded = true) clientId: String, @Path(
-            value = Param.NONCE,
-            encoded = true
-        ) nonce: String, @Body requestBody: RequestBody
-    ): Observable<RegisterResponse>
+    @POST(Url.REGISTER_DEVICE)
+    fun registerDevice(@Body requestBody: RequestBody): Observable<DefaultResponse<RegisterResponse>>
 
     @Headers("Accept: application/json")
     @POST(Url.GET_ALL_VIDEOS)
-    fun getAllVideos() :Observable<DefaultResponse>
+    fun getAllVideos() :Observable<DefaultResponse<String>>
 
 }

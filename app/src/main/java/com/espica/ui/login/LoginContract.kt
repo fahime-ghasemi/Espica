@@ -9,6 +9,6 @@ interface LoginContract {
     }
     interface Presenter:BasePresenter
     {
-
+        fun sendPhone(phone:String);
     }
 }
