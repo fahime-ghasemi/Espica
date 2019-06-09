@@ -12,5 +12,7 @@ object Url {
     const val REGISTER_WITH_PHONE = "registerDevice/device/"
     const val REGISTER_DEVICE = "register/device/"
     const val GET_ALL_VIDEOS = "{client_id}/registerDevice/{nonce}"
+    const val SEND_OTP = "send/otp/"
+    const val VERIFY_CODE = "verify/otp/"
 
 }

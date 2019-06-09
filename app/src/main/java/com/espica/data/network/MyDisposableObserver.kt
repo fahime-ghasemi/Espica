@@ -10,10 +10,10 @@ import io.reactivex.observers.DisposableObserver
 
 abstract class MyDisposableObserver<T> : DisposableObserver<T>() {
 
-    protected abstract fun onSuccess(t: T)
+    protected abstract fun onSuccess(response: T)
 
-    override fun onNext(t: T) {
-        onSuccess(t)
+    override fun onNext(response: T) {
+        onSuccess(response)
     }
 
     override fun onError(throwable: Throwable) {

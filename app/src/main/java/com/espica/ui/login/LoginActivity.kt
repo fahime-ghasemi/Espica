@@ -3,8 +3,17 @@ package com.espica.ui.login
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.espica.R
+import com.espica.data.BundleKeys
 
 class LoginActivity : AppCompatActivity() , LoginActivityListener {
+    override fun onSmsSent(mobile:String) {
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.MOBILE,mobile)
+        supportFragmentManager.beginTransaction().replace(
+            R.id.frameLayout,
+            SendCodeFragment.newInstance(bundle)).addToBackStack("sendCode").commit()
+    }
+
     override fun onLoginWithPhone() {
         supportFragmentManager.beginTransaction().replace(
             R.id.frameLayout,

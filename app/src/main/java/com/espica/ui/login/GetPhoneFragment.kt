@@ -1,6 +1,7 @@
 package com.espica.ui.login
 
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,7 +21,20 @@ private const val ARG_PARAM2 = "param2"
  * A simple [Fragment] subclass.
  *
  */
-class GetPhoneFragment : Fragment() {
+class GetPhoneFragment : Fragment(),LoginContract.GetPhoneView {
+    lateinit var listener: LoginActivityListener
+
+    override fun showVerifyPage() {
+        listener.onSmsSent(phone.text.toString())
+    }
+
+    override fun showLoading() {
+
+    }
+
+    override fun hideLoading() {
+
+    }
 
     lateinit var presenter:LoginPresenterImp
 
@@ -34,6 +48,7 @@ class GetPhoneFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = LoginPresenterImp(ApiClient((activity!!.application as EspicaApp).networkApiService))
+        presenter.getPhoneView = this
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +63,11 @@ class GetPhoneFragment : Fragment() {
             if(validatePhone())
             presenter.sendPhone(phone.text.toString())
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        listener = context as LoginActivityListener
     }
 
     private fun validatePhone(): Boolean {

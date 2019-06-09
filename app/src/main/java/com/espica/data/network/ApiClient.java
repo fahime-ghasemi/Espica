@@ -1,7 +1,9 @@
 package com.espica.data.network;
 
 import com.espica.data.network.response.DefaultResponse;
+import com.espica.data.network.response.OTPResponse;
 import com.espica.data.network.response.RegisterResponse;
+import com.espica.data.network.response.VerifyCodeResponse;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -23,6 +25,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by IT-10 on 10/16/2018.
@@ -75,6 +78,26 @@ public class ApiClient implements Consumer<Throwable> {
         jsonObject.addProperty("device_id",randomUUID);
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),jsonObject.toString());
         return networkApiService.registerDevice(requestBody).compose(configureApiCallObserver());
+    }
+
+    @NotNull
+    public Observable<DefaultResponse<OTPResponse>> sendOtp(@NotNull String phone, @Nullable String token) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("token",token);
+        jsonObject.addProperty("mobile",phone);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),jsonObject.toString());
+
+        return networkApiService.sendOtp(requestBody).compose(configureApiCallObserver());
+    }
+
+    @NotNull
+    public Observable<DefaultResponse<VerifyCodeResponse>> verifyCode(@NotNull String code, @Nullable String mobile) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("otp",code);
+        jsonObject.addProperty("mobile",mobile);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),jsonObject.toString());
+
+        return networkApiService.verifyCode(requestBody).compose(configureApiCallObserver());
     }
 
 

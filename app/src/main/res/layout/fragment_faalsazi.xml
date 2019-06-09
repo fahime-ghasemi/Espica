@@ -33,11 +33,11 @@
             app:layout_constraintRight_toRightOf="parent"
 
             android:id="@+id/linearLayout" app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintBottom_toTopOf="@+id/TV1">
+            app:layout_constraintBottom_toTopOf="@+id/verify">
 
 
         <EditText
-                android:id="@+id/eText1"
+                android:id="@+id/digit1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="90dp"
@@ -56,7 +56,7 @@
 
 
         <EditText
-                android:id="@+id/eText2"
+                android:id="@+id/digit2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_button"
@@ -75,7 +75,7 @@
 
 
         <EditText
-                android:id="@+id/eText3"
+                android:id="@+id/digit3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_button"
@@ -94,7 +94,7 @@
 
 
         <EditText
-                android:id="@+id/eText4"
+                android:id="@+id/digit4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg_button"
@@ -116,7 +116,7 @@
     </LinearLayout>
 
     <TextView
-            android:id="@+id/TV1"
+            android:id="@+id/verify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="22dp"
