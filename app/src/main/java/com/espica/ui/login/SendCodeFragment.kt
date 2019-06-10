@@ -10,6 +10,8 @@ import com.espica.EspicaApp
 import com.espica.MainActivity
 import com.espica.R
 import com.espica.data.BundleKeys
+import com.espica.data.EspicaManager
+import com.espica.data.SettingManager
 import com.espica.data.network.ApiClient
 import kotlinx.android.synthetic.main.fragment_send_code.*
 
@@ -58,6 +60,11 @@ class SendCodeFragment : Fragment(), LoginContract.SendCodeView {
     override fun showMainPage() {
         startActivity(Intent(context, MainActivity::class.java))
         (context as LoginActivity).finish()
+    }
+
+    override fun saveUserInfo(userId: Int?) {
+        SettingManager.getInstance(context).saveUserId(userId)
+        SettingManager.getInstance(context).setLoginStatus(true)
     }
 
     override fun showLoading() {

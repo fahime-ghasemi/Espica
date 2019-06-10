@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 class VerifyCodeResponse {
     @SerializedName("user_id")
-    var userId: String = ""
+    var userId = 0
 }

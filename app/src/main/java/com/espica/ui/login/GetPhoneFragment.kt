@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.espica.EspicaApp
 import com.espica.R
 import com.espica.data.network.ApiClient
@@ -75,5 +76,7 @@ class GetPhoneFragment : Fragment(),LoginContract.GetPhoneView {
         return true
     }
 
-
+    override fun showError(message: String?) {
+        Toast.makeText(context,message,Toast.LENGTH_LONG).show()
+    }
 }

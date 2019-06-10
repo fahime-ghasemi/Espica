@@ -7,12 +7,14 @@ interface LoginContract {
     interface GetPhoneView: BaseView
     {
         fun showVerifyPage()
+        fun showError(message: String?)
 
     }
 
     interface SendCodeView :BaseView
     {
         fun showMainPage()
+        fun saveUserInfo(userId: Int?)
     }
 
     interface Presenter:BasePresenter
