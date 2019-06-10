@@ -42,7 +42,6 @@ class LoginPresenterImp(val apiClient: ApiClient):LoginContract.Presenter {
         compositeDisposable.add(apiClient.verifyCode(code,mobile).subscribeWith(object :MyDisposableObserver<DefaultResponse<VerifyCodeResponse>>()
         {
             override fun onSuccess(response: DefaultResponse<VerifyCodeResponse>) {
-                Log.i("loginPresenter",response.toString())
 
             }
 
