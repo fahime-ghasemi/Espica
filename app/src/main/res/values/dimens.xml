@@ -5,4 +5,5 @@
     <dimen name="grid_cell_distance">50dp</dimen>
     <dimen name="card_width">100dp</dimen>
     <dimen name="card_padding">10dp</dimen>
+    <dimen name="verify_num">50dp</dimen>
 </resources>

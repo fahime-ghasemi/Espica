@@ -24,10 +24,11 @@
 
 
     <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="40dp"
+            android:gravity="center"
             app:layout_constraintTop_toBottomOf="@+id/title"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -37,17 +38,14 @@
 
         <EditText
                 android:id="@+id/digit1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="90dp"
+                android:layout_width="@dimen/verify_num"
+                android:layout_height="@dimen/verify_num"
                 android:background="@drawable/bg_button"
                 android:gravity="center"
+                android:nextFocusDown="@id/digit2"
+                android:nextFocusRight="@id/digit2"
                 android:inputType="number"
                 android:maxLength="1"
-                android:paddingLeft="20dp"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="10dp"
                 android:textColor="#273bd2"
                 android:textSize="16sp"
 
@@ -56,17 +54,15 @@
 
         <EditText
                 android:id="@+id/digit2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/verify_num"
+                android:layout_height="@dimen/verify_num"
                 android:background="@drawable/bg_button"
+                android:nextFocusRight="@id/digit3"
+                android:nextFocusDown="@id/digit3"
                 android:gravity="center"
                 android:inputType="number"
                 android:layout_marginLeft="6dp"
                 android:maxLength="1"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingLeft="20dp"
-                android:paddingBottom="10dp"
                 android:textColor="#273bd2"
                 android:textSize="16sp"
 
@@ -75,17 +71,15 @@
 
         <EditText
                 android:id="@+id/digit3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/verify_num"
+                android:layout_height="@dimen/verify_num"
                 android:background="@drawable/bg_button"
                 android:layout_marginLeft="6dp"
                 android:gravity="center"
+                android:nextFocusDown="@id/digit4"
+                android:nextFocusRight="@id/digit4"
                 android:inputType="number"
                 android:maxLength="1"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingLeft="20dp"
-                android:paddingBottom="10dp"
                 android:textColor="#273bd2"
                 android:textSize="16sp"
 
@@ -94,18 +88,15 @@
 
         <EditText
                 android:id="@+id/digit4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/verify_num"
+                android:layout_height="@dimen/verify_num"
                 android:background="@drawable/bg_button"
                 android:layout_marginLeft="6dp"
-                android:layout_marginRight="80dp"
                 android:gravity="center"
                 android:inputType="number"
+                android:nextFocusRight="@id/verify"
+                android:nextFocusDown="@id/verify"
                 android:maxLength="1"
-                android:paddingTop="10dp"
-                android:paddingRight="20dp"
-                android:paddingLeft="20dp"
-                android:paddingBottom="10dp"
                 android:textColor="#273bd2"
                 android:textSize="16sp"
 
