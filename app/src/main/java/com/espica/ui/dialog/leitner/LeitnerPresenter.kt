@@ -1,5 +1,6 @@
 package com.espica.ui.dialog.leitner
 
+import com.espica.R
 import com.espica.data.network.ApiClient
 import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.response.AddToLeitnerResponse
@@ -27,7 +28,10 @@ class LeitnerPresenter(val apiClient: ApiClient) : LeitnerContract.Presenter {
             MyDisposableObserver<DefaultResponse<AddToLeitnerResponse>>()
         {
             override fun onSuccess(response: DefaultResponse<AddToLeitnerResponse>) {
-                addToLeitnerView.hideLoading()
+                if(response.status?.equals("200") == true) {
+                    addToLeitnerView.hideLoading()
+                    addToLeitnerView.showToast(R.string.message_add_to_leitner)
+                }
             }
 
         }))

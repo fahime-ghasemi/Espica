@@ -7,6 +7,7 @@ interface LeitnerContract
 {
     interface AddToLeitnerView :BaseView
     {
+        fun showToast(message_add_to_leitner: Int)
 
     }
 

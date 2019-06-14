@@ -6,4 +6,5 @@
     <color name="logo">#33ccff</color>
     <color name="bg_player">#4DD5C4C4</color>
     <color name="bg_frame">#2CD3D0D0</color>
+    <color name="bg_progress">#23BDBBBB</color>
 </resources>

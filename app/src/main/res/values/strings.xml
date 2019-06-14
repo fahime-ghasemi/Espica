@@ -24,4 +24,5 @@
     <string name="add_to_litner">اضافه به لایتنر</string>
     <string name="phrase">عبارت</string>
     <string name="desc">توضیحات</string>
+    <string name="message_add_to_leitner">عبارت مورد نظر با موفقیت به لایتنر اضافه شد</string>
 </resources>
