@@ -6,6 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.espica.BaseFragment
 import com.espica.EspicaApp
+import com.espica.MainActivity
 import com.espica.ui.player.PlayerActivity
 import com.espica.R
 import com.espica.data.BundleKeys
@@ -36,7 +37,7 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView()
-        mListener?.onNewFragmentAttached(2)
+        mListener?.onNewFragmentAttached(MainActivity.FRAGMENT_VIDEO_LIST)
         presenter.view = this
         presenter.loadVideos()
 

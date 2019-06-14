@@ -1,9 +1,6 @@
 package com.espica.data.network;
 
-import com.espica.data.network.response.DefaultResponse;
-import com.espica.data.network.response.OTPResponse;
-import com.espica.data.network.response.RegisterResponse;
-import com.espica.data.network.response.VerifyCodeResponse;
+import com.espica.data.network.response.*;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
@@ -88,6 +85,11 @@ public class ApiClient implements Consumer<Throwable> {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),jsonObject.toString());
 
         return networkApiService.sendOtp(requestBody).compose(configureApiCallObserver());
+    }
+
+    public Observable<DefaultResponse<AddToLeitnerResponse>> addToLeitner(RequestBody requestBody)
+    {
+        return networkApiService.addToLeitner(requestBody).compose(configureApiCallObserver());
     }
 
     @NotNull

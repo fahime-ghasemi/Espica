@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import com.espica.BaseFragment
 import com.espica.EspicaApp
+import com.espica.MainActivity
 import com.espica.R
 import com.espica.data.network.ApiClient
 import kotlinx.android.synthetic.main.fragment_review.*
@@ -32,7 +33,7 @@ class ReviewFragment : BaseFragment(), ReviewContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mListener?.onNewFragmentAttached(1)
+        mListener?.onNewFragmentAttached(MainActivity.FRAGMENT_REVIEW)
         presenter.view = this
         changeCameraDistance()
 

@@ -14,5 +14,6 @@ object Url {
     const val GET_ALL_VIDEOS = "{client_id}/registerDevice/{nonce}"
     const val SEND_OTP = "send/otp/"
     const val VERIFY_CODE = "verify/otp/"
+    const val ADD_TO_LEITNER = "add/flashcard/"
 
 }

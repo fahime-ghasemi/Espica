@@ -2,23 +2,28 @@ package com.espica
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.GravityCompat
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.espica.data.model.MenuItem
 import com.espica.ui.home.ExerciseFragment
 import com.espica.ui.adapter.MenuAdapter
-import com.espica.ui.dialog.DialogFragment
+import com.espica.ui.dialog.leitner.AddToLeitnerDialog
 import com.espica.ui.dialog.FilterDialogFragment
 import com.espica.ui.home.HomeFragment
 import com.espica.ui.home.OnMenuItemClickListener
 import com.espica.ui.home.ReviewFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar_main.*
-import kotlinx.android.synthetic.main.toolbar_main.view.*
 
 class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickListener {
     var baseFragment: BaseFragment? = null
+    companion object {
+        val FRAGMENT_REVIEW = 1
+        val FRAGMENT_VIDEO_LIST = 2
+        val FRAGMENT_EXCERCISE = 3
+    }
 
     val menuItems = listOf(
         MenuItem(1, R.string.home, R.drawable.ic_home),
@@ -60,9 +65,17 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
             drawerLayout.openDrawer(GravityCompat.END)
         }
         listViewMenu.adapter = MenuAdapter(this, menuItems,this)
+        initActionMenu()
+    }
+
+    private fun initActionMenu() {
         filter.setOnClickListener {
             val dialogFragment = FilterDialogFragment()
-            dialogFragment.show(supportFragmentManager,null)
+            dialogFragment.show(supportFragmentManager, null)
+        }
+        add_g5.setOnClickListener {
+            val dialogFragment = AddToLeitnerDialog();
+            dialogFragment.show(supportFragmentManager,"leitner")
         }
     }
 
@@ -108,7 +121,16 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
         }
     }
 
-    override fun onNewFragmentAttached(fragmentPosition: Int) {
+    override fun onNewFragmentAttached(fragment: Int) {
 //        bottomNavigation.currentItem = fragmentPosition
+        if(fragment==FRAGMENT_REVIEW) {
+            filter.visibility = View.GONE
+            add_g5.visibility = View.VISIBLE
+        }
+        else if(fragment == FRAGMENT_VIDEO_LIST)
+        {
+            filter.visibility = View.VISIBLE
+            add_g5.visibility = View.GONE
+        }
     }
 }

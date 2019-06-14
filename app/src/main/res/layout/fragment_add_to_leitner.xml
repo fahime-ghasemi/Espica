@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.constraintlayout.widget.ConstraintLayout
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:background="@color/bg_frame"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   android:paddingTop="8dp"
+                                                   android:paddingStart="18dp"
+                                                   android:paddingEnd="18dp"
+                                                   android:paddingBottom="8dp">
+    <TextView android:layout_width="wrap_content"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintRight_toRightOf="parent"
+              android:id="@+id/txtPhrase"
+              android:text="@string/phrase"
+              android:fontFamily="@font/iran_sans_fa_num_medium"
+              android:textSize="15sp"
+              android:padding="8dp"
+              android:layout_height="wrap_content"/>
+
+    <EditText android:layout_width="0dp"
+              android:id="@+id/phrase"
+              app:layout_constraintTop_toBottomOf="@id/txtPhrase"
+              app:layout_constraintStart_toStartOf="parent"
+              android:layout_marginTop="8dp"
+              app:layout_constraintEnd_toEndOf="parent"
+              android:gravity="left"
+              android:nextFocusDown="@id/desc"
+              android:nextFocusRight="@id/desc"
+              android:padding="8dp"
+              android:background="@drawable/bg_edittext"
+              android:layout_height="100dp"/>
+
+    <TextView android:layout_width="wrap_content"
+              app:layout_constraintTop_toBottomOf="@id/phrase"
+              android:layout_marginTop="8dp"
+              app:layout_constraintRight_toRightOf="parent"
+              android:id="@+id/txtDesc"
+              android:text="@string/desc"
+              android:fontFamily="@font/iran_sans_fa_num_medium"
+              android:textSize="15sp"
+              android:padding="8dp"
+              android:layout_height="wrap_content"/>
+
+    <EditText android:layout_width="0dp"
+              android:id="@+id/desc"
+              app:layout_constraintTop_toBottomOf="@id/txtDesc"
+              app:layout_constraintStart_toStartOf="parent"
+              android:layout_marginTop="8dp"
+              app:layout_constraintEnd_toEndOf="parent"
+              android:gravity="left"
+              android:nextFocusRight="@id/confirm"
+              android:nextFocusDown="@id/confirm"
+              android:padding="8dp"
+              android:background="@drawable/bg_edittext"
+              android:layout_height="100dp"/>
+
+    <TextView
+            android:id="@+id/confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/bg_button"
+            android:text="@string/accept"
+            android:layout_marginBottom="18dp"
+            android:fontFamily="@font/iran_sans_fa_num_medium"
+            app:layout_constraintTop_toBottomOf="@id/desc"
+            android:layout_marginTop="18dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+    />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
