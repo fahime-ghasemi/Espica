@@ -1,9 +1,7 @@
-package com.espica.ui.dialog.leitner
+package com.espica.ui.leitner
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.espica.EspicaApp
 import com.espica.R
@@ -11,7 +9,6 @@ import com.espica.data.network.ApiClient
 import com.espica.ui.dialog.BaseDialogFragment
 import com.espica.ui.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.fragment_add_to_leitner.*
-import kotlinx.android.synthetic.main.fragment_get_phone.*
 
 class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerView {
 
@@ -24,7 +21,8 @@ class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerVie
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = LeitnerPresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
+        presenter =
+            LeitnerPresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
         presenter.addToLeitnerView = this
     }
 
@@ -36,7 +34,7 @@ class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerVie
     private fun initUi() {
         confirm.setOnClickListener {
             if (validInput())
-                presenter.addToLeitner(phrase.text.toString(), desc.text.toString(), "5")
+                presenter.addToLeitner(title.text.toString(), desc.text.toString(), "5")
         }
     }
 

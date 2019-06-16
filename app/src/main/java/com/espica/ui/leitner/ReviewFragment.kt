@@ -3,19 +3,25 @@ package com.espica.ui.home
 import android.animation.AnimatorInflater
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.espica.BaseFragment
 import com.espica.EspicaApp
 import com.espica.MainActivity
 import com.espica.R
 import com.espica.data.network.ApiClient
+import com.espica.ui.dialog.ProgressDialog
+import com.espica.ui.leitner.LeitnerContract
+import com.espica.ui.leitner.LeitnerPresenter
 import kotlinx.android.synthetic.main.fragment_review.*
 import kotlinx.android.synthetic.main.loading.*
 
 
-class ReviewFragment : BaseFragment(), ReviewContract.View {
+class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
 
-    lateinit var presenter: ReviewPresenter
+    lateinit var presenter: LeitnerPresenter
     private var mIsBackVisible = false
+    var progress: ProgressDialog? = null
+
 
     override val layoutResId = com.espica.R.layout.fragment_review
 
@@ -27,17 +33,17 @@ class ReviewFragment : BaseFragment(), ReviewContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = ReviewPresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
+        presenter = LeitnerPresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mListener?.onNewFragmentAttached(MainActivity.FRAGMENT_REVIEW)
-        presenter.view = this
+        presenter.leitnerView = this
         changeCameraDistance()
-
         prepareCardAnim()
+        presenter.getLeitnerData("5")
 
     }
 
@@ -88,12 +94,17 @@ class ReviewFragment : BaseFragment(), ReviewContract.View {
         cartBack.setCameraDistance(scale)
     }
 
+    override fun showLeitnerData() {
+        Toast.makeText(context,"show leitner data",Toast.LENGTH_LONG).show()
+    }
+
     override fun hideLoading() {
-        loading.visibility = View.GONE
+        progress?.dismiss()
     }
 
     override fun showLoading() {
-        loading.visibility = View.VISIBLE
+        progress = ProgressDialog.newInstance()
+        progress?.show(childFragmentManager, "")
     }
 
 }

@@ -9,7 +9,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import com.espica.data.model.MenuItem
 import com.espica.ui.home.ExerciseFragment
 import com.espica.ui.adapter.MenuAdapter
-import com.espica.ui.dialog.leitner.AddToLeitnerDialog
+import com.espica.ui.leitner.AddToLeitnerDialog
 import com.espica.ui.dialog.FilterDialogFragment
 import com.espica.ui.home.HomeFragment
 import com.espica.ui.home.OnMenuItemClickListener

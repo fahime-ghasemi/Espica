@@ -8,12 +8,17 @@ import retrofit2.http.*
 interface NetworkApiService {
 
     @Headers("Accept: application/json")
+    @POST(Url.GET_LEITNER)
+    fun getLeitnerData(@Body requestBody: RequestBody) : Observable<DefaultResponse<LeitnerDataResponse>>
+
+
+    @Headers("Accept: application/json")
     @POST(Url.REGISTER_DEVICE)
     fun registerDevice(@Body requestBody: RequestBody): Observable<DefaultResponse<RegisterResponse>>
 
     @Headers("Accept: application/json")
-    @POST(Url.GET_ALL_VIDEOS)
-    fun getAllVideos() :Observable<DefaultResponse<String>>
+    @GET(Url.GET_ALL_VIDEOS)
+    fun getAllVideos() :Observable<VideoListResponse>
 
     @Headers("Accept: application/json")
     @POST(Url.SEND_OTP)

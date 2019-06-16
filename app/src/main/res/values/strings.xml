@@ -25,4 +25,6 @@
     <string name="phrase">عبارت</string>
     <string name="desc">توضیحات</string>
     <string name="message_add_to_leitner">عبارت مورد نظر با موفقیت به لایتنر اضافه شد</string>
+    <string name="error">خطا!</string>
+    <string name="title">عنوان</string>
 </resources>

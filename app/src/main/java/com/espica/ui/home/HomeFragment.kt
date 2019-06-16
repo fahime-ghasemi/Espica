@@ -13,6 +13,7 @@ import com.espica.data.BundleKeys
 import com.espica.data.model.Video
 import com.espica.data.network.ApiClient
 import com.espica.ui.adapter.VideoAdapter
+import com.espica.ui.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.loading.*
 
@@ -21,6 +22,7 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
     lateinit var presenter: HomePresenter
     override val layoutResId = R.layout.fragment_home
     var hasMoreVideo = true
+    var progress : ProgressDialog? = null
 
     companion object {
         fun newInstance(): HomeFragment {
@@ -52,18 +54,23 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
     }
 
     override fun hideLoading() {
-        loading.visibility = View.GONE
+        progress?.dismiss()
     }
 
     override fun showLoading() {
-        loading.visibility = View.VISIBLE
+        progress = ProgressDialog.newInstance()
+        progress?.show(childFragmentManager, "")
     }
 
     override fun showVideos(videoList: ArrayList<Video>, hasMoreVideo: Boolean) {
         this.hasMoreVideo = hasMoreVideo
         val position = recyclerView.adapter!!.itemCount
         (recyclerView.adapter as VideoAdapter).addItmes(videoList)
-        recyclerView.adapter!!.notifyItemInserted(position)
+        recyclerView.post(object : Runnable {
+            override fun run() {
+                recyclerView.adapter!!.notifyItemInserted(position)
+            }
+        })
 
     }
 

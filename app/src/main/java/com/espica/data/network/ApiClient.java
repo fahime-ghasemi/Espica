@@ -60,8 +60,8 @@ public class ApiClient implements Consumer<Throwable> {
         }
     }
 
-    public Observable<DefaultResponse<String>> getAllVideos() {
-        return networkApiService.getAllVideos();
+    public Observable<VideoListResponse> getAllVideos() {
+        return networkApiService.getAllVideos().compose(configureApiCallObserver());
     }
 
     @SuppressWarnings("unchecked")
@@ -100,6 +100,12 @@ public class ApiClient implements Consumer<Throwable> {
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"),jsonObject.toString());
 
         return networkApiService.verifyCode(requestBody).compose(configureApiCallObserver());
+    }
+
+    @NotNull
+    public Observable<DefaultResponse<LeitnerDataResponse>> getLeitnerData(RequestBody requestBody) {
+
+        return networkApiService.getLeitnerData(requestBody).compose(configureApiCallObserver());
     }
 
 

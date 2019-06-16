@@ -16,7 +16,7 @@ class Utils
     }
 
     fun hideKeyboard(activity: Activity) {
-        // Check if no view has focus:
+        // Check if no leitnerView has focus:
         val view = activity.currentFocus
         if (view != null) {
             val inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -34,7 +34,7 @@ class Utils
     }
 
     fun showKeyboard(activity: Activity, editView: View) {
-        // Check if no view has focus:
+        // Check if no leitnerView has focus:
         val view = activity.currentFocus
         if (view != null) {
             val inputManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

@@ -1,4 +1,4 @@
-package com.espica.ui.dialog.leitner
+package com.espica.ui.leitner
 
 import com.espica.BasePresenter
 import com.espica.BaseView
@@ -14,5 +14,11 @@ interface LeitnerContract
     interface Presenter:BasePresenter
     {
         fun addToLeitner(phrase: String, desc: String, userId: String)
+        fun getLeitnerData(userId: String)
+
+    }
+
+    interface LeitnerView:BaseView {
+        fun showLeitnerData()
     }
 }
