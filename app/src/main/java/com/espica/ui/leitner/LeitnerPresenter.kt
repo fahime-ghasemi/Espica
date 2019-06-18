@@ -6,6 +6,7 @@ import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.response.AddToLeitnerResponse
 import com.espica.data.network.response.DefaultResponse
 import com.espica.data.network.response.LeitnerDataResponse
+import com.espica.data.network.response.ReviewResponse
 import com.google.gson.JsonObject
 import io.reactivex.disposables.CompositeDisposable
 import okhttp3.MediaType
@@ -57,7 +58,25 @@ class LeitnerPresenter(val apiClient: ApiClient) : LeitnerContract.Presenter {
             MyDisposableObserver<DefaultResponse<LeitnerDataResponse>>() {
             override fun onSuccess(response: DefaultResponse<LeitnerDataResponse>) {
                 leitnerView.hideLoading()
-                leitnerView.showLeitnerData()
+                leitnerView.showLeitnerData(response.data?.items)
+            }
+
+        }))
+    }
+
+    override fun review(id: Int?, quality: Int) {
+        leitnerView.showLoading()
+
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("card_id", id)
+        jsonObject.addProperty("quality", quality)
+        val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
+
+        compositeDisposable.add(apiClient.review(requestBody).subscribeWith(object :
+            MyDisposableObserver<DefaultResponse<ReviewResponse>>() {
+            override fun onSuccess(response: DefaultResponse<ReviewResponse>) {
+                leitnerView.hideLoading()
+                leitnerView.showNextItem()
             }
 
         }))

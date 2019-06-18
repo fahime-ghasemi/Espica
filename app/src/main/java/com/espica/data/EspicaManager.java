@@ -8,6 +8,10 @@ public class EspicaManager {
     private User user;
 
     private EspicaManager(Context context) {
+        refreshUser(context);
+    }
+
+    public void refreshUser(Context context) {
         user = SettingManager.getInstance(context).loadUserInfo();
     }
 
@@ -22,8 +26,7 @@ public class EspicaManager {
         return user;
     }
 
-    public void release()
-    {
+    public void release() {
         user = null;
         INSTANCE = null;
     }

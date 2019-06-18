@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import com.espica.EspicaApp
 import com.espica.R
+import com.espica.data.EspicaManager
 import com.espica.data.network.ApiClient
 import com.espica.ui.dialog.BaseDialogFragment
 import com.espica.ui.dialog.ProgressDialog
@@ -34,7 +35,11 @@ class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerVie
     private fun initUi() {
         confirm.setOnClickListener {
             if (validInput())
-                presenter.addToLeitner(title.text.toString(), desc.text.toString(), "5")
+                presenter.addToLeitner(
+                    title.text.toString(),
+                    desc.text.toString(),
+                    EspicaManager.getInstance(context).user.id.toString()
+                )
         }
     }
 
@@ -53,6 +58,6 @@ class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerVie
     }
 
     override fun showToast(message_add_to_leitner: Int) {
-        Toast.makeText(context, message_add_to_leitner,Toast.LENGTH_LONG).show()
+        Toast.makeText(context, message_add_to_leitner, Toast.LENGTH_LONG).show()
     }
 }

@@ -8,12 +8,13 @@ import com.espica.BaseFragment
 import com.espica.EspicaApp
 import com.espica.MainActivity
 import com.espica.R
+import com.espica.data.EspicaManager
 import com.espica.data.network.ApiClient
+import com.espica.data.network.response.LeitnerCard
 import com.espica.ui.dialog.ProgressDialog
 import com.espica.ui.leitner.LeitnerContract
 import com.espica.ui.leitner.LeitnerPresenter
 import kotlinx.android.synthetic.main.fragment_review.*
-import kotlinx.android.synthetic.main.loading.*
 
 
 class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
@@ -21,6 +22,9 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
     lateinit var presenter: LeitnerPresenter
     private var mIsBackVisible = false
     var progress: ProgressDialog? = null
+    var items: List<LeitnerCard>? = ArrayList()
+    var position: Int = 0
+    var currentItem: LeitnerCard? = null
 
 
     override val layoutResId = com.espica.R.layout.fragment_review
@@ -43,8 +47,27 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
         presenter.leitnerView = this
         changeCameraDistance()
         prepareCardAnim()
-        presenter.getLeitnerData("5")
+        initUi()
+        presenter.getLeitnerData(EspicaManager.getInstance(context).user.id.toString())
 
+    }
+
+    private fun initUi() {
+        know.setOnClickListener {
+            presenter.review(currentItem?.id, 5)
+        }
+        notKnow.setOnClickListener {
+            presenter.review(currentItem?.id, 0)
+        }
+    }
+
+    override fun showNextItem() {
+        //todo show items tamam shod
+        if (position + 1 == items!!.size)
+            return
+        position++
+        currentItem = items!!.get(position)
+        showCardData(currentItem)
     }
 
     private fun prepareCardAnim() {
@@ -72,7 +95,6 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
 //        }
 
 
-
         goToBack.setOnClickListener {
             flipLeftOut.setTarget(cartFront)
             flipLeftIn.setTarget(cartBack)
@@ -94,8 +116,20 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
         cartBack.setCameraDistance(scale)
     }
 
-    override fun showLeitnerData() {
-        Toast.makeText(context,"show leitner data",Toast.LENGTH_LONG).show()
+    override fun showLeitnerData(items: List<LeitnerCard>?) {
+        this.items = items
+
+        if (items!!.size > 0) {
+            position = 0
+            currentItem = items.get(position)
+        }
+        showCardData(currentItem)
+        Toast.makeText(context, "show leitner data", Toast.LENGTH_LONG).show()
+    }
+
+    private fun showCardData(currentItem: LeitnerCard?) {
+        contentFront.setText(currentItem?.title)
+        info.setText(currentItem?.description)
     }
 
     override fun hideLoading() {

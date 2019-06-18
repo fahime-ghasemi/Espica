@@ -108,6 +108,12 @@ public class ApiClient implements Consumer<Throwable> {
         return networkApiService.getLeitnerData(requestBody).compose(configureApiCallObserver());
     }
 
+    @NotNull
+    public Observable<DefaultResponse<ReviewResponse>> review(RequestBody requestBody) {
+
+        return networkApiService.review(requestBody).compose(configureApiCallObserver());
+    }
+
 
     class RetryWithDelay implements
             Function<Observable<? extends Throwable>, ObservableSource<?>> {

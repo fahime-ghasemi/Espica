@@ -31,4 +31,8 @@ interface NetworkApiService {
     @Headers("Accept: application/json")
     @POST(Url.ADD_TO_LEITNER)
     fun addToLeitner(@Body requestBody: RequestBody): Observable<DefaultResponse<AddToLeitnerResponse>>
+
+    @Headers("Accept: application/json")
+    @POST(Url.LEITNER_REVIEW)
+    fun review(@Body requestBody: RequestBody): Observable<DefaultResponse<ReviewResponse>>
 }

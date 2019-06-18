@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.view.GravityCompat
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import com.espica.data.EspicaManager
 import com.espica.data.model.MenuItem
 import com.espica.ui.home.ExerciseFragment
 import com.espica.ui.adapter.MenuAdapter
@@ -132,5 +133,10 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
             filter.visibility = View.VISIBLE
             add_g5.visibility = View.GONE
         }
+    }
+
+    override fun onDestroy() {
+        EspicaManager.getInstance(applicationContext).release()
+        super.onDestroy()
     }
 }

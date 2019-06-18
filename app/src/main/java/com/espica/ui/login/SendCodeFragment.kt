@@ -65,6 +65,7 @@ class SendCodeFragment : Fragment(), LoginContract.SendCodeView {
     override fun saveUserInfo(userId: Int?) {
         SettingManager.getInstance(context).saveUserId(userId)
         SettingManager.getInstance(context).setLoginStatus(true)
+        EspicaManager.getInstance(context).refreshUser(context)
     }
 
     override fun showLoading() {
