@@ -9,7 +9,7 @@ interface NetworkApiService {
 
     @Headers("Accept: application/json")
     @POST(Url.GET_LEITNER)
-    fun getLeitnerData(@Body requestBody: RequestBody) : Observable<DefaultResponse<LeitnerDataResponse>>
+    fun getLeitnerData(@Body requestBody: RequestBody): Observable<DefaultResponse<LeitnerDataResponse>>
 
 
     @Headers("Accept: application/json")
@@ -18,7 +18,7 @@ interface NetworkApiService {
 
     @Headers("Accept: application/json")
     @GET(Url.GET_ALL_VIDEOS)
-    fun getAllVideos() :Observable<VideoListResponse>
+    fun getAllVideos(@Query(value = "offset", encoded = true) offset: Int): Observable<VideoListResponse>
 
     @Headers("Accept: application/json")
     @POST(Url.SEND_OTP)
@@ -26,7 +26,7 @@ interface NetworkApiService {
 
     @Headers("Accept: application/json")
     @POST(Url.VERIFY_CODE)
-    fun  verifyCode(@Body requestBody: RequestBody): Observable<DefaultResponse<VerifyCodeResponse>>
+    fun verifyCode(@Body requestBody: RequestBody): Observable<DefaultResponse<VerifyCodeResponse>>
 
     @Headers("Accept: application/json")
     @POST(Url.ADD_TO_LEITNER)

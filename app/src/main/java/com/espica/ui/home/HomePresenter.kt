@@ -11,12 +11,14 @@ class HomePresenter(val apiClient: ApiClient) : HomeContract.Presenter {
     val compositeDisposable = CompositeDisposable()
     var view: HomeContract.View? = null
 
-    override fun loadVideos(loadNextVideos: Boolean) {
-        if (!loadNextVideos)
-            view?.showLoading()
-        compositeDisposable.add(apiClient.allVideos.subscribeWith(object : MyDisposableObserver<VideoListResponse>() {
+    override fun loadVideos(pageNumber: Int) {
+
+        view?.showLoading()
+        compositeDisposable.add(apiClient.getAllVideos(pageNumber).subscribeWith(object :
+            MyDisposableObserver<VideoListResponse>() {
             override fun onSuccess(response: VideoListResponse) {
                 view?.hideLoading();
+                view?.showVideos(response.results, response.next != null)
             }
 
         }

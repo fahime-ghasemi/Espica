@@ -5,10 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.espica.data.model.Video
+import com.espica.data.network.response.VideoItem
 import com.espica.ui.home.VideoItemListener
 import kotlinx.android.synthetic.main.item_video.view.*
 
-class VideoAdapter(private val videoList: ArrayList<Video>,private val listener: VideoItemListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class VideoAdapter(private val videoList: ArrayList<VideoItem>,private val listener: VideoItemListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val ITEM_TYPE = 1
     val PROGRESS_TYPE = 2
@@ -53,7 +54,7 @@ class VideoAdapter(private val videoList: ArrayList<Video>,private val listener:
         return if (position == videoList.size) PROGRESS_TYPE else ITEM_TYPE
     }
 
-    fun addItmes(videoList: List<Video>) {
+    fun addItmes(videoList: List<VideoItem>) {
         this.videoList.addAll(videoList)
     }
 }

@@ -59,5 +59,7 @@ class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerVie
 
     override fun showToast(message_add_to_leitner: Int) {
         Toast.makeText(context, message_add_to_leitner, Toast.LENGTH_LONG).show()
+        title.setText("")
+        desc.setText("")
     }
 }

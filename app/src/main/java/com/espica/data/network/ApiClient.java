@@ -60,8 +60,8 @@ public class ApiClient implements Consumer<Throwable> {
         }
     }
 
-    public Observable<VideoListResponse> getAllVideos() {
-        return networkApiService.getAllVideos().compose(configureApiCallObserver());
+    public Observable<VideoListResponse> getAllVideos(int offset) {
+        return networkApiService.getAllVideos(offset).compose(configureApiCallObserver());
     }
 
     @SuppressWarnings("unchecked")
