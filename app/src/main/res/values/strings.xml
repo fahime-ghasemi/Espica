@@ -27,4 +27,6 @@
     <string name="message_add_to_leitner">عبارت مورد نظر با موفقیت به لایتنر اضافه شد</string>
     <string name="error">خطا!</string>
     <string name="title">عنوان</string>
+    <string name="no_leitner">کارت دیگری برای مرور در این تاریخ وجود ندارد</string>
+    <string name="no_leitner_list">کارتی برای مرور در این تاریخ وجود ندارد</string>
 </resources>

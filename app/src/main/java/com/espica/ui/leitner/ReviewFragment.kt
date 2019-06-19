@@ -62,9 +62,10 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
     }
 
     override fun showNextItem() {
-        //todo show items tamam shod
-        if (position + 1 == items!!.size)
+        if (position + 1 == items!!.size) {
+            Toast.makeText(context, R.string.no_leitner, Toast.LENGTH_LONG).show()
             return
+        }
         position++
         currentItem = items!!.get(position)
         showCardData(currentItem)
@@ -76,24 +77,6 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
 
         val flipRightIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_in)
         val flipRightOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_out)
-
-//        cardContainer.setOnClickListener {
-//            if (!mIsBackVisible) {
-//                flipLeftOut.setTarget(cartFront)
-//                flipLeftIn.setTarget(cartBack)
-//                flipLeftOut.start()
-//                flipLeftIn.start()
-//                mIsBackVisible = true
-//            } else {
-//                flipRightIn.setTarget(cartFront)
-//                flipRightOut.setTarget(cartBack)
-//                flipRightIn.start()
-//                flipRightOut.start()
-//                mIsBackVisible = false
-//            }
-//
-//        }
-
 
         goToBack.setOnClickListener {
             flipLeftOut.setTarget(cartFront)
@@ -122,12 +105,19 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
         if (items!!.size > 0) {
             position = 0
             currentItem = items.get(position)
+            noLeitner.visibility = View.GONE
+            leitnerView.visibility = View.VISIBLE
+            showCardData(currentItem)
+
+        } else {
+            noLeitner.visibility = View.VISIBLE
+            leitnerView.visibility = View.GONE
         }
-        showCardData(currentItem)
-        Toast.makeText(context, "show leitner data", Toast.LENGTH_LONG).show()
     }
 
     private fun showCardData(currentItem: LeitnerCard?) {
+        cartFront.visibility = View.VISIBLE
+        cartBack.visibility = View.GONE
         contentFront.setText(currentItem?.title)
         info.setText(currentItem?.description)
     }
