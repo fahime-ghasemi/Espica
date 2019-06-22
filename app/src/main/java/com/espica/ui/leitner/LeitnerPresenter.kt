@@ -48,9 +48,6 @@ class LeitnerPresenter(val apiClient: ApiClient) : LeitnerContract.Presenter {
     override fun getLeitnerData(userId:String) {
         leitnerView.showLoading()
         val jsonObject = JsonObject()
-//        jsonObject.addProperty("title", phrase)
-//        jsonObject.addProperty("description", desc)
-//        jsonObject.addProperty("type", "word")
         jsonObject.addProperty("user_id", userId)
         val requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString())
 

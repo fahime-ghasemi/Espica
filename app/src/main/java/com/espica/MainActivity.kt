@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.view.GravityCompat
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import com.espica.data.BundleKeys
 import com.espica.data.EspicaManager
 import com.espica.data.model.MenuItem
 import com.espica.ui.home.ExerciseFragment
@@ -20,9 +21,11 @@ import kotlinx.android.synthetic.main.toolbar_main.*
 
 class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickListener {
     var baseFragment: BaseFragment? = null
+    var currentFragment: Int? = FRAGMENT_VIDEO_LIST
+
     companion object {
-        val FRAGMENT_REVIEW = 1
-        val FRAGMENT_VIDEO_LIST = 2
+        val FRAGMENT_REVIEW = 2
+        val FRAGMENT_VIDEO_LIST = 1
         val FRAGMENT_EXCERCISE = 3
     }
 
@@ -43,7 +46,9 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initUI()
-        loadFragment(1)
+        if (savedInstanceState != null)
+            currentFragment = savedInstanceState.getInt(BundleKeys.CURRENT_FRAGMENT, FRAGMENT_VIDEO_LIST)
+        loadFragment(currentFragment)
     }
 
     private fun initUI() {
@@ -65,7 +70,7 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
         menu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.END)
         }
-        listViewMenu.adapter = MenuAdapter(this, menuItems,this)
+        listViewMenu.adapter = MenuAdapter(this, menuItems, this)
         initActionMenu()
     }
 
@@ -76,7 +81,7 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
         }
         add_g5.setOnClickListener {
             val dialogFragment = AddToLeitnerDialog();
-            dialogFragment.show(supportFragmentManager,"leitner")
+            dialogFragment.show(supportFragmentManager, "leitner")
         }
     }
 
@@ -85,23 +90,24 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
             1 -> {
                 loadFragment(1)
             }
-            2->{
+            2 -> {
                 loadFragment(2)
             }
-            3 ->{
+            3 -> {
                 loadFragment(3)
             }
         }
         drawerLayout.closeDrawer(GravityCompat.END)
     }
 
-    private fun loadFragment(tab: Int) {
+    private fun loadFragment(tab: Int?) {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         when (tab) {
             1 -> {
                 baseFragment = supportFragmentManager.findFragmentByTag("home") as? BaseFragment
                 if (baseFragment == null)
                     baseFragment = HomeFragment.newInstance()
+                currentFragment = FRAGMENT_VIDEO_LIST
                 fragmentTransaction.replace(R.id.frameLayout, baseFragment!!, "home")
                     .commit()
             }
@@ -109,6 +115,7 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
                 baseFragment = supportFragmentManager.findFragmentByTag("review") as? BaseFragment
                 if (baseFragment == null)
                     baseFragment = ReviewFragment.newInstance()
+                currentFragment = FRAGMENT_REVIEW
                 fragmentTransaction.replace(R.id.frameLayout, baseFragment!!, "review")
                     .commit()
             }
@@ -116,6 +123,7 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
                 baseFragment = supportFragmentManager.findFragmentByTag("exercise") as? BaseFragment
                 if (baseFragment == null)
                     baseFragment = ExerciseFragment.newInstance()
+                currentFragment = FRAGMENT_EXCERCISE
                 fragmentTransaction.replace(R.id.frameLayout, baseFragment!!, "exercise")
                     .commit()
             }
@@ -124,15 +132,18 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
 
     override fun onNewFragmentAttached(fragment: Int) {
 //        bottomNavigation.currentItem = fragmentPosition
-        if(fragment==FRAGMENT_REVIEW) {
+        if (fragment == FRAGMENT_REVIEW) {
             filter.visibility = View.GONE
             add_g5.visibility = View.VISIBLE
-        }
-        else if(fragment == FRAGMENT_VIDEO_LIST)
-        {
+        } else if (fragment == FRAGMENT_VIDEO_LIST) {
             filter.visibility = View.VISIBLE
             add_g5.visibility = View.GONE
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(BundleKeys.CURRENT_FRAGMENT, currentFragment!!)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {

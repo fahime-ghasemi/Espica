@@ -122,17 +122,11 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
 
     private fun showCardData(currentItem: LeitnerCard?) {
         if (mIsBackVisible) {
-//            flipRightIn?.setTarget(cartFront)
-//            flipRightOut?.setTarget(cartBack)
-//            flipRightIn?.start()
-//            flipRightOut?.start()
             cartBack.alpha = 0.0f
             cartBack.rotationY = -180f
             cartFront.alpha = 1.0f
             cartFront.rotationY = 0.0f
             mIsBackVisible = false
-//            cartBack.visibility = View.GONE
-//            cartFront.visibility = View.VISIBLE
         }
         contentFront.setText(currentItem?.title)
         info.setText(currentItem?.description)
@@ -144,7 +138,12 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
 
     override fun showLoading() {
         progress = ProgressDialog.newInstance()
-        progress?.show(childFragmentManager, "")
+        progress?.show(fragmentManager!!, "")
+    }
+
+    override fun onDestroy() {
+        presenter.destroy()
+        super.onDestroy()
     }
 
 }
