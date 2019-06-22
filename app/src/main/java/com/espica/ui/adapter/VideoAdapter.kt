@@ -7,22 +7,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.espica.data.model.Video
 import com.espica.data.network.response.VideoItem
 import com.espica.ui.home.VideoItemListener
+import kotlinx.android.synthetic.main.item_progress.view.*
 import kotlinx.android.synthetic.main.item_video.view.*
 
-class VideoAdapter(private val videoList: ArrayList<VideoItem>,private val listener: VideoItemListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class VideoAdapter(private val videoList: ArrayList<VideoItem>, private val listener: VideoItemListener) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     val ITEM_TYPE = 1
     val PROGRESS_TYPE = 2
-    var showProgress = false
+    var showProgress = true
 
-    class VideoViewHolder(view: View) : RecyclerView.ViewHolder(view)
-    {
+    class VideoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val title = view.videoTitle
         val duration = view.videoDuration
 
     }
 
     class ProgressViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    {
+        val root = view.root
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == PROGRESS_TYPE) {
@@ -38,6 +42,10 @@ class VideoAdapter(private val videoList: ArrayList<VideoItem>,private val liste
         return if (showProgress) videoList.size + 1 else videoList.size
     }
 
+    fun getVideoCount(): Int {
+        return videoList.size
+    }
+
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (position != videoList.size) {
             val video = videoList[position]
@@ -47,6 +55,10 @@ class VideoAdapter(private val videoList: ArrayList<VideoItem>,private val liste
                 listener.onPlayVideoClick(video)
             }
         }
+//        if(position==10) {
+//            val progressViewHolder = holder as ProgressViewHolder
+//            progressViewHolder.root.visibility = View.GONE
+//        }
 
     }
 

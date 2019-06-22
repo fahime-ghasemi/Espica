@@ -10,21 +10,20 @@ import com.espica.MainActivity
 import com.espica.ui.player.PlayerActivity
 import com.espica.R
 import com.espica.data.BundleKeys
-import com.espica.data.model.Video
 import com.espica.data.network.ApiClient
 import com.espica.data.network.response.VideoItem
 import com.espica.ui.adapter.VideoAdapter
 import com.espica.ui.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.loading.*
 
-class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
+class HomeFragment : BaseFragment(), HomeContract.View, VideoItemListener {
 
     lateinit var presenter: HomePresenter
     override val layoutResId = R.layout.fragment_home
-    var hasMoreVideo = true
-    var progress : ProgressDialog? = null
-    var pageNumber = 1
+    var hasMoreVideo = false
+    var progress: ProgressDialog? = null
+    var offset = 0
+    val itemPerPage = 2
 
     companion object {
         fun newInstance(): HomeFragment {
@@ -43,7 +42,7 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
         initRecyclerView()
         mListener?.onNewFragmentAttached(MainActivity.FRAGMENT_VIDEO_LIST)
         presenter.view = this
-        presenter.loadVideos(pageNumber)
+        presenter.loadVideos(offset)
 
     }
 
@@ -51,7 +50,7 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
         val linearLayoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.addOnScrollListener(ScrollListener(linearLayoutManager))
-        recyclerView.adapter = VideoAdapter(ArrayList(),this)
+        recyclerView.adapter = VideoAdapter(ArrayList(), this)
 
     }
 
@@ -65,13 +64,18 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
     }
 
     override fun showVideos(videoList: List<VideoItem>, hasMoreVideo: Boolean) {
+        if (hasMoreVideo)
+            offset += itemPerPage
         this.hasMoreVideo = hasMoreVideo
-        if(hasMoreVideo) pageNumber++
-        val position = recyclerView.adapter!!.itemCount
+
+        val position = (recyclerView.adapter as VideoAdapter).getVideoCount()
         (recyclerView.adapter as VideoAdapter).addItmes(videoList)
         recyclerView.post(object : Runnable {
             override fun run() {
                 recyclerView.adapter!!.notifyItemInserted(position)
+                if(!hasMoreVideo)
+                    recyclerView.adapter!!.notifyItemRemoved(10)
+
             }
         })
 
@@ -79,7 +83,7 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
 
     override fun onPlayVideoClick(video: VideoItem) {
         val intent = Intent(context, PlayerActivity::class.java)
-        intent.putExtra(BundleKeys.VIDEO,video)
+        intent.putExtra(BundleKeys.VIDEO, video)
         startActivity(intent)
     }
 
@@ -87,7 +91,7 @@ class HomeFragment : BaseFragment(), HomeContract.View ,VideoItemListener{
         EndlessRecyclerOnScrollListener(mLinearLayoutManager) {
         override fun onLoadMore(current_page: Int) {
             if (hasMoreVideo)
-                presenter.loadVideos(pageNumber)
+                presenter.loadVideos(offset)
         }
     }
 }

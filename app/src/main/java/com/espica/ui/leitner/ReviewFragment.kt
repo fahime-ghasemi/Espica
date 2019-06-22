@@ -1,5 +1,6 @@
 package com.espica.ui.home
 
+import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.os.Bundle
 import android.view.View
@@ -25,8 +26,11 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
     var items: List<LeitnerCard>? = ArrayList()
     var position: Int = 0
     var currentItem: LeitnerCard? = null
+    var flipLeftIn: Animator? = null
+    var flipLeftOut: Animator? = null
 
-
+    var flipRightIn: Animator? = null
+    var flipRightOut: Animator? = null
     override val layoutResId = com.espica.R.layout.fragment_review
 
     companion object {
@@ -38,7 +42,11 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = LeitnerPresenter(ApiClient((activity!!.application as EspicaApp).networkApiService))
+        flipLeftIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_left_in)
+        flipLeftOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_left_out)
 
+        flipRightIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_in)
+        flipRightOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_out)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,23 +80,20 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
     }
 
     private fun prepareCardAnim() {
-        val flipLeftIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_left_in)
-        val flipLeftOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_left_out)
-
-        val flipRightIn = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_in)
-        val flipRightOut = AnimatorInflater.loadAnimator(context, R.animator.card_flip_right_out)
 
         goToBack.setOnClickListener {
-            flipLeftOut.setTarget(cartFront)
-            flipLeftIn.setTarget(cartBack)
-            flipLeftOut.start()
-            flipLeftIn.start()
+            flipLeftOut?.setTarget(cartFront)
+            flipLeftIn?.setTarget(cartBack)
+            flipLeftOut?.start()
+            flipLeftIn?.start()
+            mIsBackVisible = true
         }
         goToFront.setOnClickListener {
-            flipRightIn.setTarget(cartFront)
-            flipRightOut.setTarget(cartBack)
-            flipRightIn.start()
-            flipRightOut.start()
+            flipRightIn?.setTarget(cartFront)
+            flipRightOut?.setTarget(cartBack)
+            flipRightIn?.start()
+            flipRightOut?.start()
+            mIsBackVisible = false
         }
     }
 
@@ -116,8 +121,19 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
     }
 
     private fun showCardData(currentItem: LeitnerCard?) {
-        cartFront.visibility = View.VISIBLE
-        cartBack.visibility = View.GONE
+        if (mIsBackVisible) {
+//            flipRightIn?.setTarget(cartFront)
+//            flipRightOut?.setTarget(cartBack)
+//            flipRightIn?.start()
+//            flipRightOut?.start()
+            cartBack.alpha = 0.0f
+            cartBack.rotationY = -180f
+            cartFront.alpha = 1.0f
+            cartFront.rotationY = 0.0f
+            mIsBackVisible = false
+//            cartBack.visibility = View.GONE
+//            cartFront.visibility = View.VISIBLE
+        }
         contentFront.setText(currentItem?.title)
         info.setText(currentItem?.description)
     }

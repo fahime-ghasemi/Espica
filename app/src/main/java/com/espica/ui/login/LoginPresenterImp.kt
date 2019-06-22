@@ -1,6 +1,7 @@
 package com.espica.ui.login
 
 import android.util.Log
+import com.espica.R
 import com.espica.data.network.ApiClient
 import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.response.DefaultResponse
@@ -45,8 +46,12 @@ class LoginPresenterImp(val apiClient: ApiClient) : LoginContract.Presenter {
         compositeDisposable.add(apiClient.verifyCode(code, mobile).subscribeWith(object :
             MyDisposableObserver<DefaultResponse<VerifyCodeResponse>>() {
             override fun onSuccess(response: DefaultResponse<VerifyCodeResponse>) {
-                sendCodeView.saveUserInfo(response.data?.userId)
-                sendCodeView.showMainPage()
+                if(response.status!!.code!!.equals("500"))
+                    sendCodeView.showError(R.string.error_code)
+                else {
+                    sendCodeView.saveUserInfo(response.data?.userId)
+                    sendCodeView.showMainPage()
+                }
             }
 
         }))
