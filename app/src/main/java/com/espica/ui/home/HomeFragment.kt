@@ -2,6 +2,7 @@ package com.espica.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.espica.BaseFragment
@@ -73,8 +74,9 @@ class HomeFragment : BaseFragment(), HomeContract.View, VideoItemListener {
         recyclerView.post(object : Runnable {
             override fun run() {
                 recyclerView.adapter!!.notifyItemInserted(position)
-                if(!hasMoreVideo)
-                    recyclerView.adapter!!.notifyItemRemoved(10)
+                if(!hasMoreVideo) {
+                    (recyclerView.adapter as VideoAdapter).removeProgress()
+                }
 
             }
         })

@@ -41,6 +41,11 @@ class VideoAdapter(private val videoList: ArrayList<VideoItem>, private val list
     override fun getItemCount(): Int {
         return if (showProgress) videoList.size + 1 else videoList.size
     }
+     fun removeProgress()
+    {
+        showProgress = false
+        notifyItemRemoved(videoList.size)
+    }
 
     fun getVideoCount(): Int {
         return videoList.size
