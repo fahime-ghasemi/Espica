@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "970361491061",
+    "firebase_url": "https://espica-99fd5.firebaseio.com",
+    "project_id": "espica-99fd5",
+    "storage_bucket": "espica-99fd5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970361491061:android:ff7e1fc774acb000",
+        "android_client_info": {
+          "package_name": "com.espica"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "970361491061-n8hnrdvaoinsemh69hlf4jkeshogbaac.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.espica",
+            "certificate_hash": "66025cd8f3804459cc2f50f6a802a14c81edc548"
+          }
+        },
+        {
+          "client_id": "970361491061-kvebvbg01ktqoquicakhncp86laji3me.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUg7n2wTWgpjmQqSmJIKoI6lwn773643w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "970361491061-kvebvbg01ktqoquicakhncp86laji3me.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
