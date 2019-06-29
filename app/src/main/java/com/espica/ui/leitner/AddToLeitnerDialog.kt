@@ -5,16 +5,26 @@ import android.view.View
 import android.widget.Toast
 import com.espica.EspicaApp
 import com.espica.R
+import com.espica.data.BundleKeys
 import com.espica.data.EspicaManager
 import com.espica.data.network.ApiClient
 import com.espica.ui.dialog.BaseDialogFragment
 import com.espica.ui.dialog.ProgressDialog
+import com.espica.ui.home.ReviewFragment
 import kotlinx.android.synthetic.main.fragment_add_to_leitner.*
 
 class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerView {
 
     lateinit var presenter: LeitnerPresenter
     var progress: ProgressDialog? = null
+
+    companion object {
+        fun newInstance(bundle: Bundle): AddToLeitnerDialog {
+            val addToLeitner = AddToLeitnerDialog()
+            addToLeitner.arguments = bundle
+            return addToLeitner
+        }
+    }
 
     override fun getLayoutRes(): Int {
         return R.layout.fragment_add_to_leitner
@@ -33,6 +43,10 @@ class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerVie
     }
 
     private fun initUi() {
+
+        if (arguments != null && arguments!!.containsKey(BundleKeys.TITLE))
+            title.setText(arguments!!.getString(BundleKeys.TITLE))
+
         confirm.setOnClickListener {
             if (validInput())
                 presenter.addToLeitner(

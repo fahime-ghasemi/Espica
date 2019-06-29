@@ -27,6 +27,8 @@ import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.widget.Toast
+import com.espica.data.BundleKeys
+import com.espica.ui.leitner.AddToLeitnerDialog
 import com.google.android.exoplayer2.text.TextOutput
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlin.math.log
@@ -82,7 +84,12 @@ class PlayerActivity : AppCompatActivity() {
         webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
             object : ValueCallback<String> {
                 override fun onReceiveValue(text: String?) {
-                    Toast.makeText(this@PlayerActivity, text, Toast.LENGTH_LONG).show()
+                    if(text!!.length>3) {
+                        val bundle = Bundle()
+                        bundle.putString(BundleKeys.TITLE,text.drop(1).dropLast(1))
+                        val addToLeitnerDialog = AddToLeitnerDialog.newInstance(bundle)
+                        addToLeitnerDialog.show(supportFragmentManager, null)
+                    }
                 }
             })
 
