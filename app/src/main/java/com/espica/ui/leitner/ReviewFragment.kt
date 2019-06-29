@@ -67,6 +67,21 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
         notKnow.setOnClickListener {
             presenter.review(currentItem?.id, 0)
         }
+
+        next.setOnClickListener {
+            showNextItem()
+        }
+        before.setOnClickListener {
+            showPreviousItem()
+        }
+
+    }
+
+    fun showPreviousItem() {
+        if (position == 0) return
+        position--;
+        currentItem = items!!.get(position)
+        showCardData(currentItem)
     }
 
     override fun showNextItem() {
