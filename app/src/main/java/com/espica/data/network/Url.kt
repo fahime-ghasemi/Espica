@@ -8,6 +8,8 @@ object Url {
     //37.130.202.169
     private val BASE_URL_TEST = "http://185.86.36.76/api/"
     private val BASE_URL_PRODUCTION = "http://185.86.36.76/api/"
+    private val URL_MEDIA = "http://185.86.36.76/static/ownmedia/"
+    public val URL_VIDEO = URL_MEDIA + "video/"
     val BASE_URL = if (BuildConfig.DEBUG) Url.BASE_URL_TEST else Url.BASE_URL_PRODUCTION
     const val REGISTER_WITH_PHONE = "registerDevice/device/"
     const val REGISTER_DEVICE = "register/device/"

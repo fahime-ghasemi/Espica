@@ -28,6 +28,8 @@ import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.widget.Toast
 import com.espica.data.BundleKeys
+import com.espica.data.network.Url
+import com.espica.data.network.response.VideoItem
 import com.espica.ui.leitner.AddToLeitnerDialog
 import com.google.android.exoplayer2.text.TextOutput
 import kotlinx.android.synthetic.main.activity_player.*
@@ -39,6 +41,7 @@ class PlayerActivity : AppCompatActivity() {
     private var exoPlayer: SimpleExoPlayer? = null
     private var mActionMode: ActionMode? = null
     private var sentenceCounter = -1
+    private var videoItem: VideoItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,9 @@ class PlayerActivity : AppCompatActivity() {
             Activity@ this,
             DefaultTrackSelector()
         )
+        if (intent.extras?.containsKey(BundleKeys.VIDEO) == true)
+            videoItem = intent.extras?.getParcelable(BundleKeys.VIDEO)
+
         initializePlayer()
         initializeUi()
 
@@ -84,9 +90,9 @@ class PlayerActivity : AppCompatActivity() {
         webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
             object : ValueCallback<String> {
                 override fun onReceiveValue(text: String?) {
-                    if(text!!.length>3) {
+                    if (text!!.length > 3) {
                         val bundle = Bundle()
-                        bundle.putString(BundleKeys.TITLE,text.drop(1).dropLast(1))
+                        bundle.putString(BundleKeys.TITLE, text.drop(1).dropLast(1))
                         val addToLeitnerDialog = AddToLeitnerDialog.newInstance(bundle)
                         addToLeitnerDialog.show(supportFragmentManager, null)
                     }
@@ -109,13 +115,15 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun initializePlayer() {
         val videoFileUri = Uri.parse("asset:///6_tags.mp4")
-        val dataSourceFactory: DataSource.Factory = DataSource.Factory {
+        val dataSourceFactoryAsset: DataSource.Factory = DataSource.Factory {
             AssetDataSource(
                 this@PlayerActivity
             )
         }
+
+        val dataSourceFactory : DataSource.Factory = DefaultHttpDataSourceFactory("userAgent")
         val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(videoFileUri)
+            .createMediaSource(Uri.parse(Url.URL_VIDEO + videoItem?.name))
 
 //        val simpleExoPlayerView = findViewById<SimpleExoPlayerView>(com.espica.R.id.exoplayer)
 //        val webView = findViewById<WebView>(com.espica.R.id.webView)
@@ -129,23 +137,23 @@ class PlayerActivity : AppCompatActivity() {
             override fun onCues(cues: MutableList<Cue>?) {
                 if (subtitle != null) {
                     if (cues != null && cues.size > 0) {
-                        Log.e("fahi position",cues.last().position.toString())
-                        Log.e("fahi position anchor",cues.last().toString())
+                        Log.e("fahi position", cues.last().position.toString())
+                        Log.e("fahi position anchor", cues.last().toString())
 
                         Log.e("fahi", cues.last().text.toString())
                         var jsText = ""
                         if (sentenceCounter > -1)
                             jsText = "document.body.children[" + sentenceCounter + "].style = '';"
                         sentenceCounter++
-                            jsText += "var node = document.body.children[" + sentenceCounter + "];" +
-                                    "node.style.fontWeight = 'bold' ;" +
-                                    "window.scrollTo(node.offsetLeft,node.offsetTop);"
+                        jsText += "var node = document.body.children[" + sentenceCounter + "];" +
+                                "node.style.fontWeight = 'bold' ;" +
+                                "window.scrollTo(node.offsetLeft,node.offsetTop);"
 
                         webView.evaluateJavascript(
                             jsText,
                             object : ValueCallback<String> {
                                 override fun onReceiveValue(text: String?) {
-                                    Log.e("fahiiiii",text)
+                                    Log.e("fahiiiii", text)
                                 }
                             }
                         )
@@ -176,7 +184,7 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         val subtitleSource =
-            SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactory, textFormat,5*60*1000)
+            SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactoryAsset, textFormat, 5 * 60 * 1000)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)
