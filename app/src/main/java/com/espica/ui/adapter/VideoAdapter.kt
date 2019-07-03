@@ -4,7 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.espica.GlideApp
+import com.espica.R
 import com.espica.data.network.Url
 import com.espica.data.network.response.VideoItem
 import com.espica.ui.home.VideoItemListener
@@ -60,7 +63,8 @@ class VideoAdapter(private val videoList: ArrayList<VideoItem>, private val list
             videoViewHolder.title.setOnClickListener {
                 listener.onPlayVideoClick(video)
             }
-            GlideApp.with(videoViewHolder.videoCover).load(Url.BASE_URL + video.name).into(videoViewHolder.videoCover)
+            GlideApp.with(videoViewHolder.videoCover).load(Url.BASE_URL + video.name).fitCenter().transform(RoundedCorners(8))
+                .placeholder(R.drawable.video_cover).into(videoViewHolder.videoCover)
         }
 //        if(position==10) {
 //            val progressViewHolder = holder as ProgressViewHolder
