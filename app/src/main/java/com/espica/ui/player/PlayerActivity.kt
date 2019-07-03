@@ -114,16 +114,15 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun initializePlayer() {
-        val videoFileUri = Uri.parse("asset:///6_tags.mp4")
-        val dataSourceFactoryAsset: DataSource.Factory = DataSource.Factory {
-            AssetDataSource(
-                this@PlayerActivity
-            )
-        }
+//        val dataSourceFactoryAsset: DataSource.Factory = DataSource.Factory {
+//            AssetDataSource(
+//                this@PlayerActivity
+//            )
+//        }
 
-        val dataSourceFactory : DataSource.Factory = DefaultHttpDataSourceFactory("userAgent")
+        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory("userAgent")
         val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(Uri.parse(Url.URL_VIDEO + videoItem?.name))
+            .createMediaSource(Uri.parse(Url.BASE_URL + videoItem?.name))
 
 //        val simpleExoPlayerView = findViewById<SimpleExoPlayerView>(com.espica.R.id.exoplayer)
 //        val webView = findViewById<WebView>(com.espica.R.id.webView)
@@ -164,7 +163,8 @@ class PlayerActivity : AppCompatActivity() {
             }
         })
 
-        webView.loadUrl("file:///android_asset/6_tags.html")
+//        webView.loadUrl("file:///android_asset/6_tags.html")
+//        webView.loadUrl(Url.URL_MEDIA+"html/6_tags.html");
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(WebAppInterface(), "js")
 
@@ -184,7 +184,7 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         val subtitleSource =
-            SingleSampleMediaSource(Uri.parse("asset:///6_1.srt"), dataSourceFactoryAsset, textFormat, 5 * 60 * 1000)
+            SingleSampleMediaSource(Uri.parse(Url.BASE_URL + "?video_id=" + videoItem?.id), dataSourceFactory, textFormat, 5 * 60 * 1000)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)

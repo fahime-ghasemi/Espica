@@ -6,18 +6,15 @@ import com.espica.BuildConfig
 object Url {
     //192.168.134.11
     //37.130.202.169
-    private val BASE_URL_TEST = "http://185.86.36.76/api/"
-    private val BASE_URL_PRODUCTION = "http://185.86.36.76/api/"
-    private val URL_MEDIA = "http://185.86.36.76/static/ownmedia/"
-    public val URL_VIDEO = URL_MEDIA + "video/"
+    private val BASE_URL_TEST = "http://185.86.36.76/"
+    private val BASE_URL_PRODUCTION = "http://185.86.36.76/"
     val BASE_URL = if (BuildConfig.DEBUG) Url.BASE_URL_TEST else Url.BASE_URL_PRODUCTION
-    const val REGISTER_WITH_PHONE = "registerDevice/device/"
-    const val REGISTER_DEVICE = "register/device/"
-    const val GET_LEITNER = "show/litner/"
-    const val GET_ALL_VIDEOS = "video/list/"
-    const val SEND_OTP = "send/otp/"
-    const val VERIFY_CODE = "verify/otp/"
-    const val ADD_TO_LEITNER = "add/flashcard/"
-    const val LEITNER_REVIEW = "flashcard/review/"
+    const val REGISTER_DEVICE = "api/register/device/"
+    const val GET_LEITNER = "api/show/litner/"
+    const val GET_ALL_VIDEOS = "api/video/list/"
+    const val SEND_OTP = "api/send/otp/"
+    const val VERIFY_CODE = "api/verify/otp/"
+    const val ADD_TO_LEITNER = "api/add/flashcard/"
+    const val LEITNER_REVIEW = "api/flashcard/review/"
 
 }
