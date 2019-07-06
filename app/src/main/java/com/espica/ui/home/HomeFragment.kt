@@ -96,4 +96,9 @@ class HomeFragment : BaseFragment(), HomeContract.View, VideoItemListener {
                 presenter.loadVideos(offset)
         }
     }
+
+    override fun onDestroy() {
+        presenter.destroy()
+        super.onDestroy()
+    }
 }

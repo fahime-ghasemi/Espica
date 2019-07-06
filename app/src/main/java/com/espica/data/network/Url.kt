@@ -16,5 +16,6 @@ object Url {
     const val VERIFY_CODE = "api/verify/otp/"
     const val ADD_TO_LEITNER = "api/add/flashcard/"
     const val LEITNER_REVIEW = "api/flashcard/review/"
+    const val SRT_FILE = "api/srt/download/"
 
 }

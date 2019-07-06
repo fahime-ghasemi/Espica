@@ -27,12 +27,18 @@ import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.widget.Toast
+import com.espica.EspicaApp
 import com.espica.data.BundleKeys
+import com.espica.data.network.ApiClient
+import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.Url
 import com.espica.data.network.response.VideoItem
 import com.espica.ui.leitner.AddToLeitnerDialog
 import com.google.android.exoplayer2.text.TextOutput
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_player.*
+import okhttp3.ResponseBody
+import retrofit2.Response
 import kotlin.math.log
 
 
@@ -42,6 +48,7 @@ class PlayerActivity : AppCompatActivity() {
     private var mActionMode: ActionMode? = null
     private var sentenceCounter = -1
     private var videoItem: VideoItem? = null
+    private var srtContent:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,9 +60,20 @@ class PlayerActivity : AppCompatActivity() {
         if (intent.extras?.containsKey(BundleKeys.VIDEO) == true)
             videoItem = intent.extras?.getParcelable(BundleKeys.VIDEO)
 
+        readSrtFile()
         initializePlayer()
         initializeUi()
 
+    }
+
+    private fun readSrtFile() {
+        val compositeDisposable = CompositeDisposable()
+        val apiClient = ApiClient((application as EspicaApp).networkApiService)
+        compositeDisposable.add(apiClient.readSrt(videoItem!!.id).subscribeWith(object : MyDisposableObserver<ResponseBody>(){
+            override fun onSuccess(response: ResponseBody) {
+                srtContent = response.source().readUtf8()
+            }
+        }))
     }
 
     private fun initializeUi() {
@@ -162,7 +180,7 @@ class PlayerActivity : AppCompatActivity() {
 //        webView.loadUrl("file:///android_asset/6_tags.html")
         webView.loadUrl(Url.BASE_URL+"api/html/download/?video_id="+videoItem?.id);
         webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(WebAppInterface(), "js")
+        webView.addJavascriptInterface(WebAppInterface(), "android")
 
 //        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
 //            object : ValueCallback<String> {
@@ -185,11 +203,13 @@ class PlayerActivity : AppCompatActivity() {
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)
 
+
     }
 
     open class WebAppInterface {
         @JavascriptInterface
-        fun getSelectedText(value: String) {
+        fun seekTo(number: Int) {
+
         }
     }
 }

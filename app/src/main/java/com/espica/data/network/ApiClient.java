@@ -21,8 +21,10 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import retrofit2.Response;
 
 /**
  * Created by IT-10 on 10/16/2018.
@@ -112,6 +114,12 @@ public class ApiClient implements Consumer<Throwable> {
     public Observable<DefaultResponse<ReviewResponse>> review(RequestBody requestBody) {
 
         return networkApiService.review(requestBody).compose(configureApiCallObserver());
+    }
+
+    @NotNull
+    public Observable<ResponseBody> readSrt(int videoId) {
+
+        return networkApiService.readSrt(videoId).compose(configureApiCallObserver());
     }
 
 
