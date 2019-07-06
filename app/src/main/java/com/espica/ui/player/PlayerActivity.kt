@@ -164,7 +164,7 @@ class PlayerActivity : AppCompatActivity() {
         })
 
 //        webView.loadUrl("file:///android_asset/6_tags.html")
-//        webView.loadUrl(Url.URL_MEDIA+"html/6_tags.html");
+        webView.loadUrl(Url.BASE_URL+"api/html/download/?video_id="+videoItem?.id);
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(WebAppInterface(), "js")
 
@@ -184,7 +184,7 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         val subtitleSource =
-            SingleSampleMediaSource(Uri.parse(Url.BASE_URL + "?video_id=" + videoItem?.id), dataSourceFactory, textFormat, 5 * 60 * 1000)
+            SingleSampleMediaSource(Uri.parse(Url.BASE_URL+"api/srt/download/" + "?video_id=" + videoItem?.id), dataSourceFactory, textFormat, 5 * 60 * 1000)
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)
