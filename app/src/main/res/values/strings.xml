@@ -30,4 +30,6 @@
     <string name="no_leitner">کارت دیگری برای مرور در این تاریخ وجود ندارد</string>
     <string name="no_leitner_list">کارتی برای مرور در این تاریخ وجود ندارد</string>
     <string name="error_code">کد وارد شده صحیح نیست</string>
+    <string name="cartFront">روی کارت</string>
+    <string name="cartBack">پشت کارت</string>
 </resources>

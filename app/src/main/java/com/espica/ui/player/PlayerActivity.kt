@@ -124,13 +124,9 @@ class PlayerActivity : AppCompatActivity() {
         val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
             .createMediaSource(Uri.parse(Url.BASE_URL + videoItem?.name))
 
-//        val simpleExoPlayerView = findViewById<SimpleExoPlayerView>(com.espica.R.id.exoplayer)
-//        val webView = findViewById<WebView>(com.espica.R.id.webView)
         simpleExoplayer.setPlayer(exoPlayer)
         simpleExoplayer.subtitleView.setVisibility(View.GONE);
         exoPlayer!!.playWhenReady = true
-
-//        val subtitleView = findViewById<SubtitleView>(com.espica.R.id.subtitle)
 
         exoPlayer!!.addTextOutput(object : TextOutput {
             override fun onCues(cues: MutableList<Cue>?) {
