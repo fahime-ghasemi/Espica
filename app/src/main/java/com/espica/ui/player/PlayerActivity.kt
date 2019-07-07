@@ -7,26 +7,20 @@ import android.net.Uri
 import android.util.Log
 import android.view.ActionMode
 import android.view.View
-import android.webkit.WebView
 import com.espica.R
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.SubtitleView
 import com.google.android.exoplayer2.upstream.*
-import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.source.SingleSampleMediaSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.source.MergingMediaSource
 import com.google.android.exoplayer2.text.Cue
-import com.google.android.exoplayer2.text.TextRenderer
 import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
-import android.widget.Toast
 import com.espica.EspicaApp
 import com.espica.data.BundleKeys
 import com.espica.data.network.ApiClient
@@ -38,8 +32,6 @@ import com.google.android.exoplayer2.text.TextOutput
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_player.*
 import okhttp3.ResponseBody
-import retrofit2.Response
-import kotlin.math.log
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -105,7 +97,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun addToLitner() {
-        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
+        webViewEng.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
             object : ValueCallback<String> {
                 override fun onReceiveValue(text: String?) {
                     if (text!!.length > 3) {
@@ -148,7 +140,6 @@ class PlayerActivity : AppCompatActivity() {
 
         exoPlayer!!.addTextOutput(object : TextOutput {
             override fun onCues(cues: MutableList<Cue>?) {
-                if (subtitle != null) {
                     if (cues != null && cues.size > 0) {
                         Log.e("fahi position", cues.last().position.toString())
                         Log.e("fahi position anchor", cues.last().toString())
@@ -162,7 +153,7 @@ class PlayerActivity : AppCompatActivity() {
                                 "node.style.fontWeight = 'bold' ;" +
                                 "window.scrollTo(node.offsetLeft,node.offsetTop);"
 
-                        webView.evaluateJavascript(
+                        webViewEng.evaluateJavascript(
                             jsText,
                             object : ValueCallback<String> {
                                 override fun onReceiveValue(text: String?) {
@@ -173,14 +164,13 @@ class PlayerActivity : AppCompatActivity() {
 
 //                        subtitle.setCues(cues)
                     }
-                }
             }
         })
 
 //        webView.loadUrl("file:///android_asset/6_tags.html")
-        webView.loadUrl(Url.BASE_URL+"api/html/download/?video_id="+videoItem?.id);
-        webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(WebAppInterface(), "android")
+        webViewEng.loadUrl(Url.BASE_URL+"api/html/download/?video_id="+videoItem?.id);
+        webViewEng.settings.javaScriptEnabled = true
+        webViewEng.addJavascriptInterface(WebAppInterface(), "android")
 
 //        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
 //            object : ValueCallback<String> {
