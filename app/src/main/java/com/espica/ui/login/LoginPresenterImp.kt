@@ -20,7 +20,7 @@ class LoginPresenterImp(val apiClient: ApiClient) : LoginContract.Presenter {
 
 
     override fun sendPhone(phone: String) {
-        getPhoneView.showLoading();
+        getPhoneView.showLoading()
         compositeDisposable.add(apiClient.registerDevice(UUID.randomUUID().toString()).subscribeWith(object :
             MyDisposableObserver<DefaultResponse<RegisterResponse>>() {
             override fun onSuccess(response: DefaultResponse<RegisterResponse>) {
@@ -29,8 +29,10 @@ class LoginPresenterImp(val apiClient: ApiClient) : LoginContract.Presenter {
                     MyDisposableObserver<DefaultResponse<OTPResponse>>() {
                     override fun onSuccess(response: DefaultResponse<OTPResponse>) {
                         Log.i("loginPresenter", response.toString())
-                        if (response.status?.code?.equals("200") == true)
+                        if (response.status?.code?.equals("200") == true) {
+                            getPhoneView.hideLoading()
                             getPhoneView.showVerifyPage()
+                        }
                         else
                             getPhoneView.showError(response.status?.message)
                     }
@@ -46,6 +48,7 @@ class LoginPresenterImp(val apiClient: ApiClient) : LoginContract.Presenter {
         compositeDisposable.add(apiClient.verifyCode(code, mobile).subscribeWith(object :
             MyDisposableObserver<DefaultResponse<VerifyCodeResponse>>() {
             override fun onSuccess(response: DefaultResponse<VerifyCodeResponse>) {
+                sendCodeView.hideLoading()
                 if(response.status!!.code!!.equals("500"))
                     sendCodeView.showError(R.string.error_code)
                 else {

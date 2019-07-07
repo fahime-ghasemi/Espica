@@ -11,6 +11,7 @@ import android.widget.Toast
 import com.espica.EspicaApp
 import com.espica.R
 import com.espica.data.network.ApiClient
+import com.espica.ui.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.fragment_get_phone.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -24,17 +25,19 @@ private const val ARG_PARAM2 = "param2"
  */
 class GetPhoneFragment : Fragment(),LoginContract.GetPhoneView {
     lateinit var listener: LoginActivityListener
+    var progress: ProgressDialog? = null
 
     override fun showVerifyPage() {
         listener.onSmsSent(phone.text.toString())
     }
 
     override fun showLoading() {
-
+        progress = ProgressDialog.newInstance()
+        progress?.show(childFragmentManager, "")
     }
 
     override fun hideLoading() {
-
+        progress?.dismiss()
     }
 
     lateinit var presenter:LoginPresenterImp

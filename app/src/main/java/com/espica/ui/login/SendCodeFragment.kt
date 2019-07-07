@@ -14,11 +14,14 @@ import com.espica.data.BundleKeys
 import com.espica.data.EspicaManager
 import com.espica.data.SettingManager
 import com.espica.data.network.ApiClient
+import com.espica.ui.dialog.ProgressDialog
 import kotlinx.android.synthetic.main.fragment_send_code.*
 
 class SendCodeFragment : Fragment(), LoginContract.SendCodeView {
     lateinit var presenter: LoginPresenterImp
     var mobile :String? = null
+    var progress: ProgressDialog? = null
+
     companion object {
         fun newInstance(bundle: Bundle): SendCodeFragment {
             val fragment =SendCodeFragment()
@@ -70,11 +73,12 @@ class SendCodeFragment : Fragment(), LoginContract.SendCodeView {
     }
 
     override fun showLoading() {
-
+        progress = ProgressDialog.newInstance()
+        progress?.show(childFragmentManager, "")
     }
 
     override fun hideLoading() {
-
+        progress?.dismiss()
     }
 
     override fun showError(error_code: Int) {
