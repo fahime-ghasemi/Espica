@@ -172,6 +172,8 @@ class PlayerActivity : AppCompatActivity() {
         webViewEng.settings.javaScriptEnabled = true
         webViewEng.addJavascriptInterface(WebAppInterface(), "android")
 
+        webViewPer.loadUrl(Url.BASE_URL+"api/html/persian/download/?video_id="+videoItem?.id)
+
 //        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
 //            object : ValueCallback<String> {
 //                override fun onReceiveValue(text: String?) {
