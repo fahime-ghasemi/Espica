@@ -6,12 +6,17 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import java.io.File
 
-class Utils
-{
+class Utils {
     companion object {
         fun convertDpToPx(context: Context, dp: Float): Float {
             return dp * context.getResources().getDisplayMetrics().density
+        }
+
+        fun isFileDownloaded(filePath: String): Boolean {
+            val file = File(filePath)
+            return file.exists()
         }
     }
 
@@ -41,5 +46,7 @@ class Utils
             inputManager.showSoftInput(editView, InputMethodManager.SHOW_IMPLICIT)
         }
     }
+
+
 
 }

@@ -10,7 +10,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import android.os.Build
+import com.downloader.PRDownloader
+import com.downloader.PRDownloaderConfig
 import io.fabric.sdk.android.services.settings.IconRequest.build
+import io.fabric.sdk.android.services.settings.IconRequest.build
+
+
 
 
 class EspicaApp: MultiDexApplication() {
@@ -20,6 +25,14 @@ class EspicaApp: MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         networkApiService = provideApiService()
+        // Enabling database for resume support even after the application is killed:
+        val config = PRDownloaderConfig.newBuilder()
+            .setDatabaseEnabled(true)
+            .setReadTimeout(30000)
+            .setConnectTimeout(30000)
+            .build()
+
+        PRDownloader.initialize(applicationContext, config)
     }
 
     internal fun provideClient(): OkHttpClient {

@@ -18,5 +18,5 @@ class VideoItem(
     var image: String
 ) : Parcelable {
 
-
+    val downloadName: String = id.toString() + "_" + title
 }

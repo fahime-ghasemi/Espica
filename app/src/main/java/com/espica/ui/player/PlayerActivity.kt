@@ -21,17 +21,24 @@ import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
+import android.widget.Toast
+import com.downloader.Error
+import com.downloader.OnDownloadListener
+import com.downloader.OnPauseListener
+import com.downloader.PRDownloader
 import com.espica.EspicaApp
 import com.espica.data.BundleKeys
 import com.espica.data.network.ApiClient
 import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.Url
 import com.espica.data.network.response.VideoItem
+import com.espica.tools.Utils
 import com.espica.ui.leitner.AddToLeitnerDialog
 import com.google.android.exoplayer2.text.TextOutput
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_player.*
 import okhttp3.ResponseBody
+import java.io.File
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -40,7 +47,7 @@ class PlayerActivity : AppCompatActivity() {
     private var mActionMode: ActionMode? = null
     private var sentenceCounter = -1
     private var videoItem: VideoItem? = null
-    private var srtContent:String?=null
+    private var srtContent: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +68,8 @@ class PlayerActivity : AppCompatActivity() {
     private fun readSrtFile() {
         val compositeDisposable = CompositeDisposable()
         val apiClient = ApiClient((application as EspicaApp).networkApiService)
-        compositeDisposable.add(apiClient.readSrt(videoItem!!.id).subscribeWith(object : MyDisposableObserver<ResponseBody>(){
+        compositeDisposable.add(apiClient.readSrt(videoItem!!.id).subscribeWith(object :
+            MyDisposableObserver<ResponseBody>() {
             override fun onSuccess(response: ResponseBody) {
                 srtContent = response.source().readUtf8()
             }
@@ -72,6 +80,32 @@ class PlayerActivity : AppCompatActivity() {
         more.setOnClickListener {
             val playerBottomSheet = PlayerBottomSheet()
             playerBottomSheet.show(supportFragmentManager, null)
+        }
+        download.setOnClickListener {
+            PRDownloader.download(
+                Url.BASE_URL + videoItem?.name,
+                filesDir.path,
+                videoItem?.downloadName
+            )
+                .build()
+                .setOnPauseListener {
+
+                }
+                .setOnProgressListener {
+                    download.setImageResource(R.drawable.ic_download)
+                }
+                .start(object : OnDownloadListener {
+                    override fun onDownloadComplete() {
+                        Toast.makeText(applicationContext, "downlaod complete", Toast.LENGTH_LONG)
+                        download.setImageResource(R.drawable.ic_file_download)
+                    }
+
+                    override fun onError(error: Error?) {
+                        Toast.makeText(applicationContext, "downlaod error", Toast.LENGTH_LONG)
+
+                    }
+
+                })
         }
     }
 
@@ -130,9 +164,16 @@ class PlayerActivity : AppCompatActivity() {
 //            )
 //        }
 
-        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSourceFactory("userAgent")
+        val filePath = filesDir.path + File.separator + videoItem?.downloadName
+        val isFileDownloaded = Utils.isFileDownloaded(filePath)
+        val dataSourceFactory: DataSource.Factory = if(isFileDownloaded) DefaultDataSourceFactory(this,"userAgent") else DefaultHttpDataSourceFactory("userAgent")
+        val uri = if (isFileDownloaded)
+            Uri.parse(filePath)
+        else
+            Uri.parse(Url.BASE_URL + videoItem?.name)
+
         val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(Uri.parse(Url.BASE_URL + videoItem?.name))
+            .createMediaSource(uri)
 
         simpleExoplayer.setPlayer(exoPlayer)
         simpleExoplayer.subtitleView.setVisibility(View.GONE);
@@ -140,39 +181,35 @@ class PlayerActivity : AppCompatActivity() {
 
         exoPlayer!!.addTextOutput(object : TextOutput {
             override fun onCues(cues: MutableList<Cue>?) {
-                    if (cues != null && cues.size > 0) {
-                        Log.e("fahi position", cues.last().position.toString())
-                        Log.e("fahi position anchor", cues.last().toString())
+                if (cues != null && cues.size > 0) {
+                    var jsText = ""
+                    if (sentenceCounter > -1)
+                        jsText = "document.body.children[" + sentenceCounter + "].style = '';"
+                    sentenceCounter++
+                    jsText += "var node = document.body.children[" + sentenceCounter + "];" +
+                            "node.style.fontWeight = 'bold' ;" +
+                            "window.scrollTo(node.offsetLeft,node.offsetTop);"
 
-                        Log.e("fahi", cues.last().text.toString())
-                        var jsText = ""
-                        if (sentenceCounter > -1)
-                            jsText = "document.body.children[" + sentenceCounter + "].style = '';"
-                        sentenceCounter++
-                        jsText += "var node = document.body.children[" + sentenceCounter + "];" +
-                                "node.style.fontWeight = 'bold' ;" +
-                                "window.scrollTo(node.offsetLeft,node.offsetTop);"
-
-                        webViewEng.evaluateJavascript(
-                            jsText,
-                            object : ValueCallback<String> {
-                                override fun onReceiveValue(text: String?) {
-                                    Log.e("fahiiiii", text)
-                                }
+                    webViewEng.evaluateJavascript(
+                        jsText,
+                        object : ValueCallback<String> {
+                            override fun onReceiveValue(text: String?) {
+                                Log.e("fahiiiii", text)
                             }
-                        )
+                        }
+                    )
 
 //                        subtitle.setCues(cues)
-                    }
+                }
             }
         })
 
 //        webView.loadUrl("file:///android_asset/6_tags.html")
-        webViewEng.loadUrl(Url.BASE_URL+"api/html/download/?video_id="+videoItem?.id);
+        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
         webViewEng.settings.javaScriptEnabled = true
         webViewEng.addJavascriptInterface(WebAppInterface(), "android")
 
-        webViewPer.loadUrl(Url.BASE_URL+"api/html/persian/download/?video_id="+videoItem?.id)
+        webViewPer.loadUrl(Url.BASE_URL + "api/html/persian/download/?video_id=" + videoItem?.id)
 
 //        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
 //            object : ValueCallback<String> {
@@ -190,7 +227,12 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         val subtitleSource =
-            SingleSampleMediaSource(Uri.parse(Url.BASE_URL+"api/srt/download/" + "?video_id=" + videoItem?.id), dataSourceFactory, textFormat, 5 * 60 * 1000)
+            SingleSampleMediaSource(
+                Uri.parse(Url.BASE_URL + "api/srt/download/" + "?video_id=" + videoItem?.id),
+                dataSourceFactory,
+                textFormat,
+                5 * 60 * 1000
+            )
 
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)

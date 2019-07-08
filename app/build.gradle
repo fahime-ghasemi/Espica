@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.mindorks.android:prdownloader:0.4.0'
     implementation 'com.aurelhubert:ahbottomnavigation:2.3.4'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
