@@ -194,12 +194,10 @@ class PlayerActivity : AppCompatActivity() {
                         jsText,
                         object : ValueCallback<String> {
                             override fun onReceiveValue(text: String?) {
-                                Log.e("fahiiiii", text)
                             }
                         }
                     )
 
-//                        subtitle.setCues(cues)
                 }
             }
         })

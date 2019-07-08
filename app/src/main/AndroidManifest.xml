@@ -4,38 +4,45 @@
           package="com.espica">
 
     <dist:module dist:instant="true"/>
+
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
+            android:name=".EspicaApp"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
-            android:name=".EspicaApp"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity" android:theme="@style/AppTheme.Launcher">
+        <service
+                android:name=".service.DownloadService"
+                android:enabled="true"
+                android:exported="false">
+        </service>
+
+        <activity
+                android:name=".SplashActivity"
+                android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".MainActivity"/>
-
-        <!-- <intent-filter> -->
+        <activity android:name=".MainActivity"/> <!-- <intent-filter> -->
         <!-- <action android:name="android.intent.action.MAIN"/> -->
-
-
         <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
         <!-- </intent-filter> -->
-        <!--</activity>-->
+        <!-- </activity> -->
         <activity android:name=".ui.player.PlayerActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN"/>-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN"/> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER"/> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity android:name=".ui.login.LoginActivity">
         </activity>
