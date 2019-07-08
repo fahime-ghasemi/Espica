@@ -1,6 +1,7 @@
 package com.espica.ui.login
 
 import android.util.Log
+import android.widget.Toast
 import com.espica.R
 import com.espica.data.network.ApiClient
 import com.espica.data.network.MyDisposableObserver
@@ -40,6 +41,11 @@ class LoginPresenterImp(val apiClient: ApiClient) : LoginContract.Presenter {
                 }))
             }
 
+            override fun onError(throwable: Throwable) {
+                super.onError(throwable)
+                getPhoneView.showError(throwable.message)
+            }
+
         }))
     }
 
@@ -55,6 +61,11 @@ class LoginPresenterImp(val apiClient: ApiClient) : LoginContract.Presenter {
                     sendCodeView.saveUserInfo(response.data?.userId)
                     sendCodeView.showMainPage()
                 }
+            }
+
+            override fun onError(throwable: Throwable) {
+                super.onError(throwable)
+                sendCodeView.showError(throwable.message)
             }
 
         }))

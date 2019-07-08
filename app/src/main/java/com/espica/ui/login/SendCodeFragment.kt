@@ -84,4 +84,8 @@ class SendCodeFragment : Fragment(), LoginContract.SendCodeView {
     override fun showError(error_code: Int) {
         Toast.makeText(context,error_code,Toast.LENGTH_LONG).show()
     }
+
+    override fun showError(message: String?) {
+        Toast.makeText(context,message,Toast.LENGTH_LONG).show()
+    }
 }

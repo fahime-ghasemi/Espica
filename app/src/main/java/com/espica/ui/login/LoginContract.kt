@@ -16,6 +16,7 @@ interface LoginContract {
         fun showMainPage()
         fun saveUserInfo(userId: Int?)
         fun showError(error_code: Int)
+        fun showError(message: String?)
     }
 
     interface Presenter:BasePresenter
