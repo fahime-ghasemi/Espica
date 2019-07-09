@@ -1,5 +1,9 @@
 package com.espica.ui.player
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -22,6 +26,7 @@ import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.OnPauseListener
@@ -32,6 +37,7 @@ import com.espica.data.network.ApiClient
 import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.Url
 import com.espica.data.network.response.VideoItem
+import com.espica.service.DownloadService
 import com.espica.tools.Utils
 import com.espica.ui.leitner.AddToLeitnerDialog
 import com.google.android.exoplayer2.text.TextOutput
@@ -48,6 +54,8 @@ class PlayerActivity : AppCompatActivity() {
     private var sentenceCounter = -1
     private var videoItem: VideoItem? = null
     private var srtContent: String? = null
+    private val TAG = "PlayerActivity"
+    private val downloadReceiver:DownloadReceiver = DownloadReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,30 +90,34 @@ class PlayerActivity : AppCompatActivity() {
             playerBottomSheet.show(supportFragmentManager, null)
         }
         download.setOnClickListener {
-            PRDownloader.download(
-                Url.BASE_URL + videoItem?.name,
-                filesDir.path,
-                videoItem?.downloadName
-            )
-                .build()
-                .setOnPauseListener {
+            val intent = Intent(baseContext, DownloadService::class.java)
+            intent.putExtra(BundleKeys.VIDEO, videoItem)
+            startService(intent)
 
-                }
-                .setOnProgressListener {
-                    download.setImageResource(R.drawable.ic_download)
-                }
-                .start(object : OnDownloadListener {
-                    override fun onDownloadComplete() {
-                        Toast.makeText(applicationContext, "downlaod complete", Toast.LENGTH_LONG)
-                        download.setImageResource(R.drawable.ic_file_download)
-                    }
-
-                    override fun onError(error: Error?) {
-                        Toast.makeText(applicationContext, "downlaod error", Toast.LENGTH_LONG)
-
-                    }
-
-                })
+//            PRDownloader.download(
+//                Url.BASE_URL + videoItem?.name,
+//                filesDir.path,
+//                videoItem?.downloadName
+//            )
+//                .build()
+//                .setOnPauseListener {
+//
+//                }
+//                .setOnProgressListener {
+//                    download.setImageResource(R.drawable.ic_download)
+//                }
+//                .start(object : OnDownloadListener {
+//                    override fun onDownloadComplete() {
+//                        Toast.makeText(applicationContext, "downlaod complete", Toast.LENGTH_LONG)
+//                        download.setImageResource(R.drawable.ic_file_download)
+//                    }
+//
+//                    override fun onError(error: Error?) {
+//                        Toast.makeText(applicationContext, "downlaod error", Toast.LENGTH_LONG)
+//
+//                    }
+//
+//                })
         }
     }
 
@@ -145,6 +157,18 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(downloadReceiver, IntentFilter("downlaod"))
+
+        super.onResume()
+    }
+
+    override fun onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(downloadReceiver)
+        super.onPause()
+    }
+
     override fun onDestroy() {
         releasePlayer()
         super.onDestroy()
@@ -166,7 +190,10 @@ class PlayerActivity : AppCompatActivity() {
 
         val filePath = filesDir.path + File.separator + videoItem?.downloadName
         val isFileDownloaded = Utils.isFileDownloaded(filePath)
-        val dataSourceFactory: DataSource.Factory = if(isFileDownloaded) DefaultDataSourceFactory(this,"userAgent") else DefaultHttpDataSourceFactory("userAgent")
+        val dataSourceFactory: DataSource.Factory = if (isFileDownloaded) DefaultDataSourceFactory(
+            this,
+            "userAgent"
+        ) else DefaultHttpDataSourceFactory("userAgent")
         val uri = if (isFileDownloaded)
             Uri.parse(filePath)
         else
@@ -243,5 +270,17 @@ class PlayerActivity : AppCompatActivity() {
         fun seekTo(number: Int) {
 
         }
+    }
+
+    inner class DownloadReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.i(TAG, "onReceive")
+            if (intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_DOWNLOADING)
+                download.setImageResource(R.drawable.ic_download)
+            else
+                download.setImageResource(R.drawable.ic_file_download)
+
+        }
+
     }
 }
