@@ -7,6 +7,13 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import java.io.File
+import com.google.android.exoplayer2.util.NotificationUtil.createNotificationChannel
+import android.app.NotificationManager
+import android.app.NotificationChannel
+import androidx.core.app.NotificationCompat.getChannelId
+import android.os.Build
+import com.google.android.exoplayer2.util.NotificationUtil
+
 
 class Utils {
     companion object {
@@ -17,6 +24,43 @@ class Utils {
         fun isFileDownloaded(filePath: String): Boolean {
             val file = File(filePath)
             return file.exists()
+        }
+
+        fun createNotificationChannel(
+            context: Context
+        ): String{
+
+            // NotificationChannels are required for Notifications on O (API 26) and above.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+                // The id of the channel.
+                val channelId = "espica"
+
+                // The user-visible name of the channel.
+                val channelName = "Espica channel"
+                // The user-visible description of the channel.
+                val channelDescription = "Espica channel desc"
+                val channelImportance = NotificationManager.IMPORTANCE_DEFAULT
+                val channelEnableVibrate =false
+//                val channelLockscreenVisibility = false
+
+                // Initializes NotificationChannel.
+                val notificationChannel = NotificationChannel(channelId, channelName, channelImportance)
+                notificationChannel.description = channelDescription
+                notificationChannel.enableVibration(channelEnableVibrate)
+//                notificationChannel.lockscreenVisibility = channelLockscreenVisibility
+
+                // Adds NotificationChannel to system. Attempting to create an existing notification
+                // channel with its original values performs no operation, so it's safe to perform the
+                // below sequence.
+                val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.createNotificationChannel(notificationChannel)
+
+                return channelId
+            } else {
+                // Returns null for pre-O (26) devices.
+                return ""
+            }
         }
     }
 
