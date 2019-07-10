@@ -79,17 +79,14 @@ class DownloadService : Service() {
                 }
                 .setOnProgressListener {
                     Log.i(TAG, "current bytes"+it.currentBytes +" total bytes = " + it.totalBytes)
-                    Log.i(TAG, "downlaod setOnProgressListener "+((it.currentBytes * 100) / it.totalBytes).toInt())
+                    Log.i(TAG, "downlaod setOnProgressListener "+(it.currentBytes * 100/ it.totalBytes).toInt())
 
-                    updateNotification(downloadId,it.totalBytes.toInt(),it.currentBytes.toInt())
+                    updateNotification(downloadId,100,(it.currentBytes * 100/ it.totalBytes).toInt())
                     //                download.setImageResource(R.drawable.ic_download)
                 }
                 .setOnStartOrResumeListener {
-                    Log.i(TAG, "downlaod setOnStartOrResumeListener notification id "+downloadId)
-
                     receiverIntent.putExtra(BundleKeys.DOWNLOAD_STATUS, STATUS_DOWNLOADING)
                     LocalBroadcastManager.getInstance(baseContext).sendBroadcast(receiverIntent)
-                    //todo notification
                     showNotification(downloadId)
                 }
                 .start(object : OnDownloadListener {
