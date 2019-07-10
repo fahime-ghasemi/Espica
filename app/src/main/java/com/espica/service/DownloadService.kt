@@ -39,6 +39,7 @@ class DownloadService : Service() {
     var notificationChannelId: String? = null
     lateinit var bigTextStyle: NotificationCompat.BigTextStyle
     lateinit var notificationCompatBuilder: NotificationCompat.Builder
+    var videoItem: VideoItem? = null
 
     companion object {
         val STATUS_DOWNLOADING = 1
@@ -54,17 +55,58 @@ class DownloadService : Service() {
         Log.i(TAG, "onCreate")
         mNotificationManagerCompat = NotificationManagerCompat.from(baseContext)
         notificationChannelId = Utils.createNotificationChannel(baseContext)
-        bigTextStyle = NotificationCompat.BigTextStyle().bigText("big text").setBigContentTitle("big content title")
+        bigTextStyle = NotificationCompat.BigTextStyle()
         notificationCompatBuilder = NotificationCompat.Builder(
             applicationContext, notificationChannelId!!
         )
+
+        notificationCompatBuilder
+            // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
+//            .setStyle(bigTextStyle)
+            // Content for API <24 (7.0 and below) devices.
+            .setContentText(videoItem?.title)
+            .setSmallIcon(com.espica.R.mipmap.ic_launcher)
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    resources,
+                    com.espica.R.drawable.ic_download
+                )
+            )
+//            .setContentIntent(notifyPendingIntent)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            // Set primary color (important for Wear 2.0 Notifications).
+            .setColor(ContextCompat.getColor(applicationContext, com.espica.R.color.colorPrimary))
+
+            // SIDE NOTE: Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
+            // devices and all Wear devices. If you have more than one notification and
+            // you prefer a different summary notification, set a group key and create a
+            // summary notification via
+            // .setGroupSummary(true)
+            // .setGroup(GROUP_KEY_YOUR_NAME_HERE)
+
+//            .setCategory(Notification.CATEGORY_REMINDER)
+
+            // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
+            // 'importance' which is set in the NotificationChannel. The integers representing
+            // 'priority' are different from 'importance', so make sure you don't mix them.
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setProgress(100, 0, false)
+
+        // Sets lock-screen visibility for 25 and below. For 26 and above, lock screen
+        // visibility is set in the NotificationChannel.
+//            .setVisibility(bigTextStyleReminderAppData.getChannelLockscreenVisibility())
+
+        // Adds additional actions specified above.
+//            .addAction(snoozeAction)
+//            .addAction(dismissAction)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.i(TAG, "onStartCommand")
         val receiverIntent = Intent(baseContext, PlayerActivity.DownloadReceiver::class.java)
         receiverIntent.action = "downlaod"
-        val videoItem = intent!!.getParcelableExtra<VideoItem>(BundleKeys.VIDEO)
+        videoItem = intent!!.getParcelableExtra<VideoItem>(BundleKeys.VIDEO)
+        bigTextStyle.setBigContentTitle(videoItem?.title)
         Thread().run {
             var downloadId = 800
 
@@ -78,11 +120,7 @@ class DownloadService : Service() {
 
                 }
                 .setOnProgressListener {
-                    Log.i(TAG, "current bytes"+it.currentBytes +" total bytes = " + it.totalBytes)
-                    Log.i(TAG, "downlaod setOnProgressListener "+(it.currentBytes * 100/ it.totalBytes).toInt())
-
-                    updateNotification(downloadId,100,(it.currentBytes * 100/ it.totalBytes).toInt())
-                    //                download.setImageResource(R.drawable.ic_download)
+                    updateNotification(downloadId, 100, (it.currentBytes * 100 / it.totalBytes).toInt())
                 }
                 .setOnStartOrResumeListener {
                     receiverIntent.putExtra(BundleKeys.DOWNLOAD_STATUS, STATUS_DOWNLOADING)
@@ -91,11 +129,10 @@ class DownloadService : Service() {
                 }
                 .start(object : OnDownloadListener {
                     override fun onDownloadComplete() {
-                        Log.i(TAG, "downlaod complete")
 //                    download.setImageResource(R.drawable.ic_file_download)
                         receiverIntent.putExtra(BundleKeys.DOWNLOAD_STATUS, STATUS_FINISHED)
                         LocalBroadcastManager.getInstance(baseContext).sendBroadcast(receiverIntent)
-                        updateNotification(downloadId,0, 0)
+                        updateNotification(downloadId, 0, 0)
                         if (allDownloadFinished()) stopSelf()
                     }
 
@@ -140,61 +177,62 @@ class DownloadService : Service() {
 ////            snackbar.show()
             return
         }
-//        val notificationChannelId = Utils.createNotificationChannel(baseContext)
+
+//        val notification = notificationCompatBuilder
+//            // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
+//            .setStyle(bigTextStyle)
+//            // Content for API <24 (7.0 and below) devices.
+//            .setContentText(videoItem?.title)
+//            .setSmallIcon(com.espica.R.mipmap.ic_launcher)
+//            .setLargeIcon(
+//                BitmapFactory.decodeResource(
+//                    resources,
+//                    com.espica.R.drawable.ic_download
+//                )
+//            )
+////            .setContentIntent(notifyPendingIntent)
+//            .setDefaults(NotificationCompat.DEFAULT_ALL)
+//            // Set primary color (important for Wear 2.0 Notifications).
+//            .setColor(ContextCompat.getColor(applicationContext, com.espica.R.color.colorPrimary))
 //
-//        val bigTextStyle = NotificationCompat.BigTextStyle().bigText("big text").setBigContentTitle("big content title")
-//        val notificationCompatBuilder = NotificationCompat.Builder(
-//            applicationContext, notificationChannelId!!
-//        )
+//            // SIDE NOTE: Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
+//            // devices and all Wear devices. If you have more than one notification and
+//            // you prefer a different summary notification, set a group key and create a
+//            // summary notification via
+//            // .setGroupSummary(true)
+//            // .setGroup(GROUP_KEY_YOUR_NAME_HERE)
+//
+////            .setCategory(Notification.CATEGORY_REMINDER)
+//
+//            // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
+//            // 'importance' which is set in the NotificationChannel. The integers representing
+//            // 'priority' are different from 'importance', so make sure you don't mix them.
+//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+//            .setProgress(100, 0, false)
+//
+//            // Sets lock-screen visibility for 25 and below. For 26 and above, lock screen
+//            // visibility is set in the NotificationChannel.
+////            .setVisibility(bigTextStyleReminderAppData.getChannelLockscreenVisibility())
+//
+//            // Adds additional actions specified above.
+////            .addAction(snoozeAction)
+////            .addAction(dismissAction)
+//
+//            .build()
 
-        val notification = notificationCompatBuilder
-            // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
-            .setStyle(bigTextStyle)
-            // Content for API <24 (7.0 and below) devices.
-            .setContentText("big content title")
-            .setSmallIcon(com.espica.R.mipmap.ic_launcher)
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    resources,
-                    com.espica.R.drawable.ic_download
-                )
-            )
-//            .setContentIntent(notifyPendingIntent)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            // Set primary color (important for Wear 2.0 Notifications).
-            .setColor(ContextCompat.getColor(applicationContext, com.espica.R.color.colorPrimary))
-
-            // SIDE NOTE: Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
-            // devices and all Wear devices. If you have more than one notification and
-            // you prefer a different summary notification, set a group key and create a
-            // summary notification via
-            // .setGroupSummary(true)
-            // .setGroup(GROUP_KEY_YOUR_NAME_HERE)
-
-//            .setCategory(Notification.CATEGORY_REMINDER)
-
-            // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
-            // 'importance' which is set in the NotificationChannel. The integers representing
-            // 'priority' are different from 'importance', so make sure you don't mix them.
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setProgress(100, 0, false)
-
-            // Sets lock-screen visibility for 25 and below. For 26 and above, lock screen
-            // visibility is set in the NotificationChannel.
-//            .setVisibility(bigTextStyleReminderAppData.getChannelLockscreenVisibility())
-
-            // Adds additional actions specified above.
-//            .addAction(snoozeAction)
-//            .addAction(dismissAction)
-
-            .build()
-
-        mNotificationManagerCompat.notify(notificationId, notification)
+        notificationCompatBuilder.setStyle(bigTextStyle)
+        mNotificationManagerCompat.notify(notificationId, notificationCompatBuilder.build())
     }
 
     fun updateNotification(notificationId: Int, max: Int, progress: Int) {
+        Log.i(TAG, "update notification max is " + max + " progress is " + progress)
+        if (max == 0) {
+            bigTextStyle.bigText("Download Complete")
+
+        }
         val notification = notificationCompatBuilder
             .setProgress(max, progress, false)
+            .setStyle(bigTextStyle)
             .build()
 
         mNotificationManagerCompat.notify(notificationId, notification)
