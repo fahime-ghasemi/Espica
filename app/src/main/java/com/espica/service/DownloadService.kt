@@ -34,7 +34,7 @@ import androidx.core.util.forEach
 class DownloadService : Service() {
 
     val TAG = "DownloadService"
-    val downlodList = SparseIntArray()
+    val downlodList = ArrayList<Int>()
     lateinit var mNotificationManagerCompat: NotificationManagerCompat
     var notificationChannelId: String? = null
     lateinit var bigTextStyle: NotificationCompat.BigTextStyle
@@ -65,7 +65,6 @@ class DownloadService : Service() {
         val receiverIntent = Intent(baseContext, PlayerActivity.DownloadReceiver::class.java)
         receiverIntent.action = "downlaod"
         val videoItem = intent!!.getParcelableExtra<VideoItem>(BundleKeys.VIDEO)
-        val notificationId = videoItem.id
         Thread().run {
             var downloadId = 800
 
@@ -79,18 +78,19 @@ class DownloadService : Service() {
 
                 }
                 .setOnProgressListener {
-                    Log.i(TAG, "downlaod setOnProgressListener notification id "+downlodList.get(downloadId))
+                    Log.i(TAG, "current bytes"+it.currentBytes +" total bytes = " + it.totalBytes)
+                    Log.i(TAG, "downlaod setOnProgressListener "+((it.currentBytes * 100) / it.totalBytes).toInt())
 
-                    updateNotification(100, (it.currentBytes * 100 % it.totalBytes).toInt(),downlodList.get(downloadId))
+                    updateNotification(downloadId,it.totalBytes.toInt(),it.currentBytes.toInt())
                     //                download.setImageResource(R.drawable.ic_download)
                 }
                 .setOnStartOrResumeListener {
-                    Log.i(TAG, "downlaod setOnStartOrResumeListener notification id "+downlodList.get(downloadId))
+                    Log.i(TAG, "downlaod setOnStartOrResumeListener notification id "+downloadId)
 
                     receiverIntent.putExtra(BundleKeys.DOWNLOAD_STATUS, STATUS_DOWNLOADING)
                     LocalBroadcastManager.getInstance(baseContext).sendBroadcast(receiverIntent)
                     //todo notification
-                    showNotification(downlodList.get(downloadId))
+                    showNotification(downloadId)
                 }
                 .start(object : OnDownloadListener {
                     override fun onDownloadComplete() {
@@ -98,7 +98,7 @@ class DownloadService : Service() {
 //                    download.setImageResource(R.drawable.ic_file_download)
                         receiverIntent.putExtra(BundleKeys.DOWNLOAD_STATUS, STATUS_FINISHED)
                         LocalBroadcastManager.getInstance(baseContext).sendBroadcast(receiverIntent)
-                        updateNotification(0, 0,downlodList.get(downloadId))
+                        updateNotification(downloadId,0, 0)
                         if (allDownloadFinished()) stopSelf()
                     }
 
@@ -108,14 +108,14 @@ class DownloadService : Service() {
                     }
 
                 })
-            downlodList.put(downloadId, notificationId)
+            downlodList.add(downloadId)
         }
         return START_NOT_STICKY
     }
 
     fun allDownloadFinished(): Boolean {
-        downlodList.forEach { key, value ->
-            if (PRDownloader.getStatus(key) != Status.COMPLETED)
+        downlodList.forEach {
+            if (PRDownloader.getStatus(it) != Status.COMPLETED)
                 return false
         }
         Log.i(TAG, "allDownloadFinished")
