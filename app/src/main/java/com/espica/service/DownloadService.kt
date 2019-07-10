@@ -60,45 +60,6 @@ class DownloadService : Service() {
             applicationContext, notificationChannelId!!
         )
 
-        notificationCompatBuilder
-            // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
-//            .setStyle(bigTextStyle)
-            // Content for API <24 (7.0 and below) devices.
-            .setContentText(videoItem?.title)
-            .setSmallIcon(com.espica.R.mipmap.ic_launcher)
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    resources,
-                    com.espica.R.drawable.ic_download
-                )
-            )
-//            .setContentIntent(notifyPendingIntent)
-            .setDefaults(NotificationCompat.DEFAULT_ALL)
-            // Set primary color (important for Wear 2.0 Notifications).
-            .setColor(ContextCompat.getColor(applicationContext, com.espica.R.color.colorPrimary))
-
-            // SIDE NOTE: Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
-            // devices and all Wear devices. If you have more than one notification and
-            // you prefer a different summary notification, set a group key and create a
-            // summary notification via
-            // .setGroupSummary(true)
-            // .setGroup(GROUP_KEY_YOUR_NAME_HERE)
-
-//            .setCategory(Notification.CATEGORY_REMINDER)
-
-            // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
-            // 'importance' which is set in the NotificationChannel. The integers representing
-            // 'priority' are different from 'importance', so make sure you don't mix them.
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setProgress(100, 0, false)
-
-        // Sets lock-screen visibility for 25 and below. For 26 and above, lock screen
-        // visibility is set in the NotificationChannel.
-//            .setVisibility(bigTextStyleReminderAppData.getChannelLockscreenVisibility())
-
-        // Adds additional actions specified above.
-//            .addAction(snoozeAction)
-//            .addAction(dismissAction)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -178,55 +139,55 @@ class DownloadService : Service() {
             return
         }
 
-//        val notification = notificationCompatBuilder
-//            // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
-//            .setStyle(bigTextStyle)
-//            // Content for API <24 (7.0 and below) devices.
-//            .setContentText(videoItem?.title)
-//            .setSmallIcon(com.espica.R.mipmap.ic_launcher)
-//            .setLargeIcon(
-//                BitmapFactory.decodeResource(
-//                    resources,
-//                    com.espica.R.drawable.ic_download
-//                )
-//            )
-////            .setContentIntent(notifyPendingIntent)
-//            .setDefaults(NotificationCompat.DEFAULT_ALL)
-//            // Set primary color (important for Wear 2.0 Notifications).
-//            .setColor(ContextCompat.getColor(applicationContext, com.espica.R.color.colorPrimary))
-//
-//            // SIDE NOTE: Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
-//            // devices and all Wear devices. If you have more than one notification and
-//            // you prefer a different summary notification, set a group key and create a
-//            // summary notification via
-//            // .setGroupSummary(true)
-//            // .setGroup(GROUP_KEY_YOUR_NAME_HERE)
-//
-////            .setCategory(Notification.CATEGORY_REMINDER)
-//
-//            // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
-//            // 'importance' which is set in the NotificationChannel. The integers representing
-//            // 'priority' are different from 'importance', so make sure you don't mix them.
-//            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-//            .setProgress(100, 0, false)
-//
-//            // Sets lock-screen visibility for 25 and below. For 26 and above, lock screen
-//            // visibility is set in the NotificationChannel.
-////            .setVisibility(bigTextStyleReminderAppData.getChannelLockscreenVisibility())
-//
-//            // Adds additional actions specified above.
-////            .addAction(snoozeAction)
-////            .addAction(dismissAction)
-//
-//            .build()
+        val notification = notificationCompatBuilder
+            // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
+            .setStyle(bigTextStyle)
+            // Content for API <24 (7.0 and below) devices.
+            .setContentText(videoItem?.title)
+            .setSmallIcon(com.espica.R.mipmap.ic_launcher)
+            .setLargeIcon(
+                BitmapFactory.decodeResource(
+                    resources,
+                    com.espica.R.drawable.ic_download
+                )
+            )
+//            .setContentIntent(notifyPendingIntent)
+            .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
+            // Set primary color (important for Wear 2.0 Notifications).
+            .setColor(ContextCompat.getColor(applicationContext, com.espica.R.color.colorPrimary))
+
+            // SIDE NOTE: Auto-bundling is enabled for 4 or more notifications on API 24+ (N+)
+            // devices and all Wear devices. If you have more than one notification and
+            // you prefer a different summary notification, set a group key and create a
+            // summary notification via
+            // .setGroupSummary(true)
+            // .setGroup(GROUP_KEY_YOUR_NAME_HERE)
+
+//            .setCategory(Notification.CATEGORY_REMINDER)
+
+            // Sets priority for 25 and below. For 26 and above, 'priority' is deprecated for
+            // 'importance' which is set in the NotificationChannel. The integers representing
+            // 'priority' are different from 'importance', so make sure you don't mix them.
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setProgress(100, 0, false)
+
+            // Sets lock-screen visibility for 25 and below. For 26 and above, lock screen
+            // visibility is set in the NotificationChannel.
+//            .setVisibility(bigTextStyleReminderAppData.getChannelLockscreenVisibility())
+
+            // Adds additional actions specified above.
+//            .addAction(snoozeAction)
+//            .addAction(dismissAction)
+
+            .build()
 
         notificationCompatBuilder.setStyle(bigTextStyle)
-        mNotificationManagerCompat.notify(notificationId, notificationCompatBuilder.build())
+        mNotificationManagerCompat.notify(notificationId, notification)
     }
 
     fun updateNotification(notificationId: Int, max: Int, progress: Int) {
-        Log.i(TAG, "update notification max is " + max + " progress is " + progress)
-        if (max == 0) {
+        if (progress % 5 != 0) return
+        if (max == 0 && progress == 0) {
             bigTextStyle.bigText("Download Complete")
 
         }
