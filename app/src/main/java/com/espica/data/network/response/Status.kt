@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 class Status {
     @SerializedName("code")
-    var code: String? = null
+    var code: String = String()
     @SerializedName("message")
-    var message: String? = null
+    var message: String = String()
 }

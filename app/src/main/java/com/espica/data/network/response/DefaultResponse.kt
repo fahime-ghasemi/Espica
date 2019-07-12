@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 open class DefaultResponse<T> {
     @SerializedName("status")
-    var status: Status? = null
+    var status: Status = Status()
 
     @SerializedName("data")
     var data: T? = null

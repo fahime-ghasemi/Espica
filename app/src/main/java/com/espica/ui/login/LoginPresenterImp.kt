@@ -30,7 +30,7 @@ class LoginPresenterImp(val apiClient: ApiClient) : LoginContract.Presenter {
                     MyDisposableObserver<DefaultResponse<OTPResponse>>() {
                     override fun onSuccess(response: DefaultResponse<OTPResponse>) {
                         Log.i("loginPresenter", response.toString())
-                        if (response.status?.code?.equals("200") == true) {
+                        if (response.status.code.equals("200")) {
                             getPhoneView.hideLoading()
                             getPhoneView.showVerifyPage()
                         }
