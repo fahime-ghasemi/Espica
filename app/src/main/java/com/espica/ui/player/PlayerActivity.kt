@@ -224,6 +224,7 @@ class PlayerActivity : AppCompatActivity() {
                             }
                         }
                     )
+                    webViewPer.evaluateJavascript(jsText,null)
 
                 }
             }
@@ -235,6 +236,7 @@ class PlayerActivity : AppCompatActivity() {
         webViewEng.addJavascriptInterface(WebAppInterface(), "android")
 
         webViewPer.loadUrl(Url.BASE_URL + "api/html/persian/download/?video_id=" + videoItem?.id)
+        webViewPer.settings.javaScriptEnabled = true
 
 //        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
 //            object : ValueCallback<String> {
