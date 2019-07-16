@@ -25,12 +25,7 @@ import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
-import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.downloader.Error
-import com.downloader.OnDownloadListener
-import com.downloader.OnPauseListener
-import com.downloader.PRDownloader
 import com.espica.EspicaApp
 import com.espica.data.BundleKeys
 import com.espica.data.network.ApiClient
@@ -39,6 +34,8 @@ import com.espica.data.network.Url
 import com.espica.data.network.response.VideoItem
 import com.espica.service.DownloadService
 import com.espica.tools.Utils
+import com.espica.tools.srtparser.SRTInfo
+import com.espica.tools.srtparser.SRTReader
 import com.espica.ui.leitner.AddToLeitnerDialog
 import com.google.android.exoplayer2.text.TextOutput
 import io.reactivex.disposables.CompositeDisposable
@@ -53,9 +50,10 @@ class PlayerActivity : AppCompatActivity() {
     private var mActionMode: ActionMode? = null
     private var sentenceCounter = -1
     private var videoItem: VideoItem? = null
-    private var srtContent: String? = null
     private val TAG = "PlayerActivity"
-    private val downloadReceiver:DownloadReceiver = DownloadReceiver()
+    private val downloadReceiver: DownloadReceiver = DownloadReceiver()
+    private var srtInfo: SRTInfo? = null
+    private lateinit var tempFile: File
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,9 +77,13 @@ class PlayerActivity : AppCompatActivity() {
         compositeDisposable.add(apiClient.readSrt(videoItem!!.id).subscribeWith(object :
             MyDisposableObserver<ResponseBody>() {
             override fun onSuccess(response: ResponseBody) {
-                srtContent = response.source().readUtf8()
+                val srtContent = response.source().readUtf8()
+                tempFile = File.createTempFile("id_" + videoItem!!.id.toString(), null, cacheDir)
+                tempFile.writeText(srtContent, Charsets.UTF_8)
+                srtInfo = SRTReader.read(tempFile)
             }
         }))
+
     }
 
     private fun initializeUi() {
@@ -171,6 +173,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         releasePlayer()
+        tempFile.delete()
         super.onDestroy()
     }
 
@@ -224,19 +227,21 @@ class PlayerActivity : AppCompatActivity() {
                             }
                         }
                     )
-                    webViewPer.evaluateJavascript(jsText,null)
+                    webViewPer.evaluateJavascript(jsText, null)
 
                 }
             }
         })
 
-//        webView.loadUrl("file:///android_asset/6_tags.html")
-        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
+        webViewEng.loadUrl("file:///android_asset/6_tags.html")
+//        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
         webViewEng.settings.javaScriptEnabled = true
         webViewEng.addJavascriptInterface(WebAppInterface(), "android")
 
         webViewPer.loadUrl(Url.BASE_URL + "api/html/persian/download/?video_id=" + videoItem?.id)
         webViewPer.settings.javaScriptEnabled = true
+        webViewPer.addJavascriptInterface(WebAppInterface(), "android")
+
 
 //        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
 //            object : ValueCallback<String> {
@@ -261,16 +266,21 @@ class PlayerActivity : AppCompatActivity() {
                 5 * 60 * 1000
             )
 
+
         val mergedSource = MergingMediaSource(videoSource, subtitleSource)
         exoPlayer!!.prepare(mergedSource)
 
 
     }
 
-    open class WebAppInterface {
+    open inner class WebAppInterface {
         @JavascriptInterface
         fun seekTo(number: Int) {
-
+            if (srtInfo != null) {
+                val srt = srtInfo?.get(number)
+                exoPlayer!!.seekTo(srt?.startTime?.time!!)
+                Log.i(TAG,"seek to "+srt?.startTime?.time!!)
+            }
         }
     }
 
