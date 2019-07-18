@@ -27,6 +27,7 @@ import androidx.core.app.NotificationCompat.getContentTitle
 import io.fabric.sdk.android.services.settings.IconRequest.build
 import android.R
 import android.app.Notification
+import android.app.PendingIntent
 import android.util.SparseIntArray
 import androidx.core.util.forEach
 
@@ -40,6 +41,7 @@ class DownloadService : Service() {
     lateinit var bigTextStyle: NotificationCompat.BigTextStyle
     lateinit var notificationCompatBuilder: NotificationCompat.Builder
     var videoItem: VideoItem? = null
+    var  downloadId = 0
 
     companion object {
         val STATUS_DOWNLOADING = 1
@@ -69,7 +71,6 @@ class DownloadService : Service() {
         videoItem = intent!!.getParcelableExtra<VideoItem>(BundleKeys.VIDEO)
         bigTextStyle.setBigContentTitle(videoItem?.title)
         Thread().run {
-            var downloadId = 800
 
             downloadId = PRDownloader.download(
                 Url.BASE_URL + videoItem?.name,
@@ -138,7 +139,10 @@ class DownloadService : Service() {
 ////            snackbar.show()
             return
         }
-
+        val cancelIntent = Intent(baseContext, DownloadService::class.java)
+        cancelIntent.putExtra(BundleKeys.DOWNLOAD_CANCEL, true)
+        val pendingItem =
+            PendingIntent.getService(baseContext, REQUEST_CODE_CANCEL, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT)
         val notification = notificationCompatBuilder
             // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
             .setStyle(bigTextStyle)
@@ -170,6 +174,7 @@ class DownloadService : Service() {
             // 'priority' are different from 'importance', so make sure you don't mix them.
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setProgress(100, 0, false)
+            .addAction()
 
             // Sets lock-screen visibility for 25 and below. For 26 and above, lock screen
             // visibility is set in the NotificationChannel.
