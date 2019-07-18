@@ -19,4 +19,11 @@ class VideoItem(
 ) : Parcelable {
 
     val downloadName: String = id.toString() + "_" + title
+
+    companion object
+    {
+        val DOWNLOADED = 1
+        val DOWNLOADING = 2
+        val NOT_DOWNLOADED = 3
+    }
 }

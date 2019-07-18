@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
         MenuItem(2, R.string.review, R.drawable.ic_review),
         MenuItem(3, R.string.exercise, R.drawable.ic_exercise),
         MenuItem(4, R.string.fav, R.drawable.ic_favorite),
-        MenuItem(5, R.string.download, R.drawable.ic_download),
+        MenuItem(5, R.string.download, R.drawable.ic_file_download),
         MenuItem(6, R.string.setting, R.drawable.ic_settings),
         MenuItem(7, R.string.about_us, R.drawable.ic_about_us),
         MenuItem

@@ -144,13 +144,13 @@ class DownloadService : Service() {
             .setStyle(bigTextStyle)
             // Content for API <24 (7.0 and below) devices.
             .setContentText(videoItem?.title)
-            .setSmallIcon(com.espica.R.mipmap.ic_launcher)
-            .setLargeIcon(
-                BitmapFactory.decodeResource(
-                    resources,
-                    com.espica.R.drawable.ic_download
-                )
-            )
+            .setSmallIcon(com.espica.R.drawable.ic_notification_download)
+//            .setLargeIcon(
+//                BitmapFactory.decodeResource(
+//                    resources,
+//                    com.espica.R.drawable.ic_download
+//                )
+//            )
 //            .setContentIntent(notifyPendingIntent)
             .setDefaults(NotificationCompat.DEFAULT_LIGHTS)
             // Set primary color (important for Wear 2.0 Notifications).

@@ -57,6 +57,8 @@ class PlayerActivity : AppCompatActivity() {
     private val downloadReceiver: DownloadReceiver = DownloadReceiver()
     private var srtInfo: SRTInfo? = null
     private lateinit var tempFile: File
+    private lateinit var filePath: String
+    private var fileDownloadStatus = VideoItem.NOT_DOWNLOADED
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +69,10 @@ class PlayerActivity : AppCompatActivity() {
         )
         if (intent.extras?.containsKey(BundleKeys.VIDEO) == true)
             videoItem = intent.extras?.getParcelable(BundleKeys.VIDEO)
+
+        filePath = filesDir.path + File.separator + videoItem?.downloadName
+        fileDownloadStatus = if (Utils.isFileDownloaded(filePath)) VideoItem.DOWNLOADED else
+            VideoItem.NOT_DOWNLOADED
 
         readSrtFile()
         initializePlayer()
@@ -94,35 +100,20 @@ class PlayerActivity : AppCompatActivity() {
             val playerBottomSheet = PlayerBottomSheet()
             playerBottomSheet.show(supportFragmentManager, null)
         }
-        download.setOnClickListener {
-            val intent = Intent(baseContext, DownloadService::class.java)
-            intent.putExtra(BundleKeys.VIDEO, videoItem)
-            startService(intent)
+        if (fileDownloadStatus == VideoItem.DOWNLOADED)
+            download.setImageResource(R.drawable.ic_file_downloaded)
+        else if (fileDownloadStatus == VideoItem.NOT_DOWNLOADED)
+            download.setImageResource(R.drawable.ic_file_download)
 
-//            PRDownloader.download(
-//                Url.BASE_URL + videoItem?.name,
-//                filesDir.path,
-//                videoItem?.downloadName
-//            )
-//                .build()
-//                .setOnPauseListener {
-//
-//                }
-//                .setOnProgressListener {
-//                    download.setImageResource(R.drawable.ic_download)
-//                }
-//                .start(object : OnDownloadListener {
-//                    override fun onDownloadComplete() {
-//                        Toast.makeText(applicationContext, "downlaod complete", Toast.LENGTH_LONG)
-//                        download.setImageResource(R.drawable.ic_file_download)
-//                    }
-//
-//                    override fun onError(error: Error?) {
-//                        Toast.makeText(applicationContext, "downlaod error", Toast.LENGTH_LONG)
-//
-//                    }
-//
-//                })
+        download.setOnClickListener {
+            if (fileDownloadStatus == VideoItem.NOT_DOWNLOADED) {
+                val intent = Intent(baseContext, DownloadService::class.java)
+                intent.putExtra(BundleKeys.VIDEO, videoItem)
+                startService(intent)
+            } else if (fileDownloadStatus == VideoItem.DOWNLOADING) {
+
+            }
+
         }
     }
 
@@ -176,7 +167,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         releasePlayer()
-        tempFile.delete()
+        if(tempFile.exists()) tempFile.delete()
         super.onDestroy()
     }
 
@@ -194,13 +185,12 @@ class PlayerActivity : AppCompatActivity() {
 //            )
 //        }
 
-        val filePath = filesDir.path + File.separator + videoItem?.downloadName
-        val isFileDownloaded = Utils.isFileDownloaded(filePath)
-        val dataSourceFactory: DataSource.Factory = if (isFileDownloaded) DefaultDataSourceFactory(
+
+        val dataSourceFactory: DataSource.Factory = if (fileDownloadStatus == VideoItem.DOWNLOADED) DefaultDataSourceFactory(
             this,
             "userAgent"
         ) else DefaultHttpDataSourceFactory("userAgent")
-        val uri = if (isFileDownloaded)
+        val uri = if (fileDownloadStatus == VideoItem.DOWNLOADED)
             Uri.parse(filePath)
         else
             Uri.parse(Url.BASE_URL + videoItem?.name)
@@ -301,7 +291,7 @@ class PlayerActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.i(TAG, "onReceive")
             if (intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_DOWNLOADING)
-                download.setImageResource(R.drawable.ic_download)
+                download.setImageResource(R.drawable.ic_file_downloaded)
             else
                 download.setImageResource(R.drawable.ic_file_download)
 
