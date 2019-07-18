@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import android.net.Uri
+import android.os.Handler
 import android.util.Log
 import android.view.ActionMode
 import android.view.View
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
+import androidx.annotation.MainThread
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.espica.EspicaApp
 import com.espica.data.BundleKeys
@@ -49,6 +51,7 @@ class PlayerActivity : AppCompatActivity() {
     private var exoPlayer: SimpleExoPlayer? = null
     private var mActionMode: ActionMode? = null
     private var sentenceCounter = -1
+    private var sentenceCounterBeforeSeek = -1
     private var videoItem: VideoItem? = null
     private val TAG = "PlayerActivity"
     private val downloadReceiver: DownloadReceiver = DownloadReceiver()
@@ -215,6 +218,11 @@ class PlayerActivity : AppCompatActivity() {
                     var jsText = ""
                     if (sentenceCounter > -1)
                         jsText = "document.body.children[" + sentenceCounter + "].style = '';"
+
+                    if (sentenceCounterBeforeSeek > -1)
+                        jsText = "document.body.children[" + sentenceCounterBeforeSeek + "].style = '';"
+                    sentenceCounterBeforeSeek = -1
+
                     sentenceCounter++
                     jsText += "var node = document.body.children[" + sentenceCounter + "];" +
                             "node.style.fontWeight = 'bold' ;" +
@@ -233,8 +241,8 @@ class PlayerActivity : AppCompatActivity() {
             }
         })
 
-        webViewEng.loadUrl("file:///android_asset/6_tags.html")
-//        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
+//        webViewEng.loadUrl("file:///android_asset/6_tags.html")
+        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
         webViewEng.settings.javaScriptEnabled = true
         webViewEng.addJavascriptInterface(WebAppInterface(), "android")
 
@@ -278,8 +286,13 @@ class PlayerActivity : AppCompatActivity() {
         fun seekTo(number: Int) {
             if (srtInfo != null) {
                 val srt = srtInfo?.get(number)
-                exoPlayer!!.seekTo(srt?.startTime?.time!!)
-                Log.i(TAG,"seek to "+srt?.startTime?.time!!)
+                val mainHandler = Handler(mainLooper)
+                mainHandler.post {
+                    exoPlayer!!.seekTo(srt?.startTime!!)
+                    sentenceCounterBeforeSeek = sentenceCounter
+                    sentenceCounter = srt.number - 2
+                }
+                Log.i(TAG, "seek to " + srt?.startTime)
             }
         }
     }

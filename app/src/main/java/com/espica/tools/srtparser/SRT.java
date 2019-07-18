@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class SRT implements Comparable<SRT> {
     public final int number;
-    public final Date startTime;
+    public final long startTime;
 //    public final Date endTime;
 //    public final List<String> text;
 
@@ -14,7 +14,7 @@ public class SRT implements Comparable<SRT> {
      * @param number the subtitle number
      * @param startTime the start time
      */
-    public SRT(int number, Date startTime) {
+    public SRT(int number, long startTime) {
         this.number = number;
         this.startTime = startTime;
 //        this.endTime = endTime;

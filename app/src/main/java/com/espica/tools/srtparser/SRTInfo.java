@@ -80,7 +80,7 @@ public class SRTInfo implements Iterable<SRT>, Cloneable {
      */
     public SRT get(int number) {
         // Create a dummy SRT object since the comparison is by number only.
-        return info.tailSet(new SRT(number, null)).first();
+        return info.tailSet(new SRT(number, 0)).first();
     }
 
     /**
@@ -100,7 +100,7 @@ public class SRTInfo implements Iterable<SRT>, Cloneable {
      * @return true if the subtitle number is in the SRTInfo; false otherwise
      */
     public boolean contains(int number) {
-        return info.contains(new SRT(number, null));
+        return info.contains(new SRT(number, 0));
     }
 
     /**

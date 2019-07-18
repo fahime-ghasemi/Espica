@@ -45,7 +45,7 @@ public class SRTReader {
      * @return the SRTInfo object
      * @throws SRTReaderException thrown while reading SRT file
      */
-    public static SRTInfo read(File srtFile) throws  SRTReaderException {
+    public static SRTInfo read(File srtFile) throws SRTReaderException {
         if (!srtFile.exists()) {
             throw new SRTReaderException(srtFile.getAbsolutePath() + " does not exist");
         }
@@ -106,14 +106,15 @@ public class SRTReader {
                             tString,
                             SRTTimeFormat.TIME_DELIMITER));
         }
-        Date startTime = null;
+
+        long startTime;
         try {
-            startTime = SRTTimeFormat.parse(times[0]);
-        } catch (ParseException e) {
+            startTime = SRTTimeFormat.timeToMillisecond(times[0]);
+        } catch (NumberFormatException e) {
             throw new SRTReaderException(String.format(
-                    "[Line: %d] %s has an invalid start time format",
+                    "[Line: %d] %s has an invalid end time format",
                     reader.getLineNumber(),
-                    times[0]));
+                    times[1]));
         }
 
 //        Date endTime = null;

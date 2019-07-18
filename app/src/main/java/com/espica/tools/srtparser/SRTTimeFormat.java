@@ -40,6 +40,7 @@ public class SRTTimeFormat {
 
     /**
      * Formats the date into SRT time format.
+     *
      * @param date the date
      * @return the SRT time format
      */
@@ -49,12 +50,24 @@ public class SRTTimeFormat {
 
     /**
      * Parses the SRT time format into date.
+     *
      * @param srtTime the SRT time format
      * @return the date
      * @throws ParseException
      */
     public static Date parse(String srtTime) throws ParseException {
         return sdf.parse(srtTime);
+    }
+
+    public static long timeToMillisecond(String time) {
+        long millisecond;
+        String[] sections = time.split(":");
+        millisecond = Long.valueOf(sections[0]) * 60 * 60 * 1000;
+        millisecond += Long.valueOf(sections[1]) * 60 * 1000;
+        String[] lastSection = sections[2].split(",");
+        millisecond += Long.valueOf(lastSection[0]) * 1000;
+        millisecond += Long.valueOf(lastSection[1]);
+        return millisecond;
     }
 
     /**
