@@ -290,10 +290,12 @@ class PlayerActivity : AppCompatActivity() {
     inner class DownloadReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.i(TAG, "onReceive")
-            if (intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_DOWNLOADING)
+            if (intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_CANCEL)
+                download.setImageResource(R.drawable.ic_file_download)
+            else if(intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_FINISHED)
                 download.setImageResource(R.drawable.ic_file_downloaded)
             else
-                download.setImageResource(R.drawable.ic_file_download)
+                download.setImageResource(R.drawable.ic_file_downloaded)
 
         }
 
