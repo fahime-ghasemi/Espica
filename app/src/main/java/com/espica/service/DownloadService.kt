@@ -185,13 +185,13 @@ class DownloadService : Service() {
             PendingIntent.getService(baseContext, REQUEST_CODE_CANCEL, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT)
 
 //        val collapseRemoteView = RemoteViews(baseco)
-        if(notificationCompatBuilder.mActions.size>0)
+        if (notificationCompatBuilder.mActions.size > 0)
             notificationCompatBuilder.mActions.removeAt(0)
         val notification = notificationCompatBuilder
             // BIG_TEXT_STYLE sets title and content for API 16 (4.1 and after).
             // Content for API <24 (7.0 and below) devices.
             .setContentText(videoItem?.title)
-            .addAction(0,"Cancel",pendingIntent)
+            .addAction(0, "Cancel", pendingIntent)
             .build()
 
         notificationCompatBuilder.setStyle(bigTextStyle)
@@ -205,6 +205,8 @@ class DownloadService : Service() {
     fun updateNotification(notificationId: Int, max: Int, progress: Int) {
         if (progress % 5 != 0) return
         if (max == 0 && progress == 0) {
+            if (notificationCompatBuilder.mActions.size > 0)
+                notificationCompatBuilder.mActions.removeAt(0)
             bigTextStyle.bigText("Download Complete")
 
         }

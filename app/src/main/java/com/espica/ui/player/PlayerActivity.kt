@@ -56,7 +56,7 @@ class PlayerActivity : AppCompatActivity() {
     private val TAG = "PlayerActivity"
     private val downloadReceiver: DownloadReceiver = DownloadReceiver()
     private var srtInfo: SRTInfo? = null
-    private lateinit var tempFile: File
+    private var tempFile: File? = null
     private lateinit var filePath: String
     private var fileDownloadStatus = VideoItem.NOT_DOWNLOADED
 
@@ -81,6 +81,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun readSrtFile() {
+        Log.i(TAG, "readSrtFile")
         val compositeDisposable = CompositeDisposable()
         val apiClient = ApiClient((application as EspicaApp).networkApiService)
         compositeDisposable.add(apiClient.readSrt(videoItem!!.id).subscribeWith(object :
@@ -88,7 +89,7 @@ class PlayerActivity : AppCompatActivity() {
             override fun onSuccess(response: ResponseBody) {
                 val srtContent = response.source().readUtf8()
                 tempFile = File.createTempFile("id_" + videoItem!!.id.toString(), null, cacheDir)
-                tempFile.writeText(srtContent, Charsets.UTF_8)
+                tempFile?.writeText(srtContent, Charsets.UTF_8)
                 srtInfo = SRTReader.read(tempFile)
             }
         }))
@@ -167,7 +168,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         releasePlayer()
-        if(tempFile.exists()) tempFile.delete()
+        tempFile?.delete()
         super.onDestroy()
     }
 
@@ -205,6 +206,9 @@ class PlayerActivity : AppCompatActivity() {
         exoPlayer!!.addTextOutput(object : TextOutput {
             override fun onCues(cues: MutableList<Cue>?) {
                 if (cues != null && cues.size > 0) {
+                    Log.i(TAG,"postition = "+cues[0].position)
+                    Log.i(TAG,"positionAnchor = "+cues[0].positionAnchor)
+                    Log.i(TAG,"line = "+cues[0].line)
                     var jsText = ""
                     if (sentenceCounter > -1)
                         jsText = "document.body.children[" + sentenceCounter + "].style = '';"
