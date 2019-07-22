@@ -5,6 +5,7 @@ import java.util.Date;
 public class SRT implements Comparable<SRT> {
     public final int number;
     public final long startTime;
+    public final long endTime;
 //    public final Date endTime;
 //    public final List<String> text;
 
@@ -14,10 +15,10 @@ public class SRT implements Comparable<SRT> {
      * @param number the subtitle number
      * @param startTime the start time
      */
-    public SRT(int number, long startTime) {
+    public SRT(int number, long startTime,long endTime) {
         this.number = number;
         this.startTime = startTime;
-//        this.endTime = endTime;
+        this.endTime = endTime;
 //        this.text = new ArrayList<>(text);
     }
 

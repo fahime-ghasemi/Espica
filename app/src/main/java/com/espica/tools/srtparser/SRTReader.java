@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class is responsible for reading an SRT file.
@@ -117,15 +119,15 @@ public class SRTReader {
                     times[1]));
         }
 
-//        Date endTime = null;
-//        try {
-//            endTime = SRTTimeFormat.parse(times[1]);
-//        } catch (ParseException e) {
-//            throw new SRTReaderException(String.format(
-//                    "[Line: %d] %s has an invalid end time format",
-//                    reader.getLineNumber(),
-//                    times[1]));
-//        }
+        long endTime;
+        try {
+            endTime = SRTTimeFormat.timeToMillisecond(times[1]);
+        } catch (NumberFormatException e) {
+            throw new SRTReaderException(String.format(
+                    "[Line: %d] %s has an invalid end time format",
+                    reader.getLineNumber(),
+                    times[1]));
+        }
 //
 //        List<String> subtitleLines = new ArrayList<>();
         String line;
@@ -142,6 +144,6 @@ public class SRTReader {
 //                    reader.getLineNumber()));
 //        }
 
-        return new SRT(subtitleNumber, startTime);
+        return new SRT(subtitleNumber, startTime,endTime);
     }
 }

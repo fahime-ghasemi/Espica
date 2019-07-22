@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
-import androidx.annotation.MainThread
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.espica.EspicaApp
 import com.espica.data.BundleKeys
@@ -40,6 +39,7 @@ import com.espica.tools.srtparser.SRTInfo
 import com.espica.tools.srtparser.SRTReader
 import com.espica.ui.leitner.AddToLeitnerDialog
 import com.google.android.exoplayer2.text.TextOutput
+import com.google.android.exoplayer2.ui.TimeBar
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_player.*
 import okhttp3.ResponseBody
@@ -50,8 +50,8 @@ class PlayerActivity : AppCompatActivity() {
 
     private var exoPlayer: SimpleExoPlayer? = null
     private var mActionMode: ActionMode? = null
-    private var sentenceCounter = -1
-    private var sentenceCounterBeforeSeek = -1
+//    private var sentenceCounter = -1
+//    private var sentenceCounterBeforeSeek = -1
     private var videoItem: VideoItem? = null
     private val TAG = "PlayerActivity"
     private val downloadReceiver: DownloadReceiver = DownloadReceiver()
@@ -59,6 +59,9 @@ class PlayerActivity : AppCompatActivity() {
     private var tempFile: File? = null
     private lateinit var filePath: String
     private var fileDownloadStatus = VideoItem.NOT_DOWNLOADED
+    private var currentSRTPosition = -1
+    private var previousSRTPosition = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,6 +76,23 @@ class PlayerActivity : AppCompatActivity() {
         filePath = filesDir.path + File.separator + videoItem?.downloadName
         fileDownloadStatus = if (Utils.isFileDownloaded(filePath)) VideoItem.DOWNLOADED else
             VideoItem.NOT_DOWNLOADED
+
+        exo_progress.addListener(object : TimeBar.OnScrubListener
+        {
+            override fun onScrubMove(timeBar: TimeBar?, position: Long) {
+            }
+
+            override fun onScrubStart(timeBar: TimeBar?, position: Long) {
+                Log.i(TAG,"onScrubStart " + position)
+
+            }
+
+            override fun onScrubStop(timeBar: TimeBar?, position: Long, canceled: Boolean) {
+                Log.i(TAG,"onScrubStop " + position)
+            }
+
+        })
+
 
         readSrtFile()
         initializePlayer()
@@ -206,21 +226,17 @@ class PlayerActivity : AppCompatActivity() {
         exoPlayer!!.addTextOutput(object : TextOutput {
             override fun onCues(cues: MutableList<Cue>?) {
                 if (cues != null && cues.size > 0) {
-                    Log.i(TAG,"postition = "+cues[0].position)
-                    Log.i(TAG,"positionAnchor = "+cues[0].positionAnchor)
-                    Log.i(TAG,"line = "+cues[0].line)
+                   currentSRTPosition = srtInfo?.getSRTNumber(exoPlayer?.currentPosition!!)!! -1
+
                     var jsText = ""
-                    if (sentenceCounter > -1)
-                        jsText = "document.body.children[" + sentenceCounter + "].style = '';"
+                    if (previousSRTPosition > -1)
+                        jsText = "document.body.children[" + previousSRTPosition  + "].style = '';"
 
-                    if (sentenceCounterBeforeSeek > -1)
-                        jsText = "document.body.children[" + sentenceCounterBeforeSeek + "].style = '';"
-                    sentenceCounterBeforeSeek = -1
-
-                    sentenceCounter++
-                    jsText += "var node = document.body.children[" + sentenceCounter + "];" +
+                    jsText += "var node = document.body.children[" + currentSRTPosition  + "];" +
                             "node.style.fontWeight = 'bold' ;" +
                             "window.scrollTo(node.offsetLeft,node.offsetTop);"
+
+                    previousSRTPosition = currentSRTPosition
 
                     webViewEng.evaluateJavascript(
                         jsText,
@@ -233,7 +249,9 @@ class PlayerActivity : AppCompatActivity() {
 
                 }
             }
+
         })
+
 
 //        webViewEng.loadUrl("file:///android_asset/6_tags.html")
         webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
@@ -261,11 +279,9 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         val subtitleSource =
-            SingleSampleMediaSource(
+            SingleSampleMediaSource.Factory(dataSourceFactory).createMediaSource(
                 Uri.parse(Url.BASE_URL + "api/srt/download/" + "?video_id=" + videoItem?.id),
-                dataSourceFactory,
-                textFormat,
-                5 * 60 * 1000
+                textFormat,4*60*1000
             )
 
 
@@ -283,8 +299,7 @@ class PlayerActivity : AppCompatActivity() {
                 val mainHandler = Handler(mainLooper)
                 mainHandler.post {
                     exoPlayer!!.seekTo(srt?.startTime!!)
-                    sentenceCounterBeforeSeek = sentenceCounter
-                    sentenceCounter = srt.number - 2
+                    previousSRTPosition = currentSRTPosition
                 }
                 Log.i(TAG, "seek to " + srt?.startTime)
             }
