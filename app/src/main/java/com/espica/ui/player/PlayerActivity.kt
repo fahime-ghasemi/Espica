@@ -77,28 +77,9 @@ class PlayerActivity : AppCompatActivity() {
         fileDownloadStatus = if (Utils.isFileDownloaded(filePath)) VideoItem.DOWNLOADED else
             VideoItem.NOT_DOWNLOADED
 
-        exo_progress.addListener(object : TimeBar.OnScrubListener
-        {
-            override fun onScrubMove(timeBar: TimeBar?, position: Long) {
-                moveSRTBoldPosition(position)
-            }
-
-            override fun onScrubStart(timeBar: TimeBar?, position: Long) {
-                Log.i(TAG,"onScrubStart " + position)
-
-            }
-
-            override fun onScrubStop(timeBar: TimeBar?, position: Long, canceled: Boolean) {
-                Log.i(TAG,"onScrubStop " + position)
-            }
-
-        })
-
-
         readSrtFile()
         initializePlayer()
         initializeUi()
-
     }
 
     private fun readSrtFile() {
@@ -137,6 +118,23 @@ class PlayerActivity : AppCompatActivity() {
             }
 
         }
+
+        exo_progress.addListener(object : TimeBar.OnScrubListener
+        {
+            override fun onScrubMove(timeBar: TimeBar?, position: Long) {
+                moveSRTBoldPosition(position)
+                exoPlayer?.seekTo(position)
+            }
+
+            override fun onScrubStart(timeBar: TimeBar?, position: Long) {
+
+            }
+
+            override fun onScrubStop(timeBar: TimeBar?, position: Long, canceled: Boolean) {
+            }
+
+        })
+
     }
 
     override fun onActionModeStarted(mode: ActionMode?) {
@@ -244,17 +242,6 @@ class PlayerActivity : AppCompatActivity() {
         webViewPer.settings.javaScriptEnabled = true
         webViewPer.addJavascriptInterface(WebAppInterface(), "android")
 
-
-//        webView.evaluateJavascript("(function getText(){return window.getSelection().toString()})()",
-//            object : ValueCallback<String> {
-//                override fun onReceiveValue(text: String?) {
-//                    Toast.makeText(this@PlayerActivity, text, Toast.LENGTH_LONG).show()
-//                }
-//            })
-//        val textFormat = Format.createTextSampleFormat(
-//            null, MimeTypes.APPLICATION_SUBRIP,null,
-//            Format.NO_VALUE, C.SELECTION_FLAG_DEFAULT,"en",null,  Format.OFFSET_SAMPLE_RELATIVE
-//        )
         val textFormat = Format.createTextSampleFormat(
             null, MimeTypes.APPLICATION_SUBRIP, null,
             Format.NO_VALUE, Format.NO_VALUE, "en", null, Format.OFFSET_SAMPLE_RELATIVE
