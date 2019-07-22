@@ -80,6 +80,7 @@ class PlayerActivity : AppCompatActivity() {
         exo_progress.addListener(object : TimeBar.OnScrubListener
         {
             override fun onScrubMove(timeBar: TimeBar?, position: Long) {
+                moveSRTBoldPosition(position)
             }
 
             override fun onScrubStart(timeBar: TimeBar?, position: Long) {
@@ -226,26 +227,7 @@ class PlayerActivity : AppCompatActivity() {
         exoPlayer!!.addTextOutput(object : TextOutput {
             override fun onCues(cues: MutableList<Cue>?) {
                 if (cues != null && cues.size > 0) {
-                   currentSRTPosition = srtInfo?.getSRTNumber(exoPlayer?.currentPosition!!)!! -1
-
-                    var jsText = ""
-                    if (previousSRTPosition > -1)
-                        jsText = "document.body.children[" + previousSRTPosition  + "].style = '';"
-
-                    jsText += "var node = document.body.children[" + currentSRTPosition  + "];" +
-                            "node.style.fontWeight = 'bold' ;" +
-                            "window.scrollTo(node.offsetLeft,node.offsetTop);"
-
-                    previousSRTPosition = currentSRTPosition
-
-                    webViewEng.evaluateJavascript(
-                        jsText,
-                        object : ValueCallback<String> {
-                            override fun onReceiveValue(text: String?) {
-                            }
-                        }
-                    )
-                    webViewPer.evaluateJavascript(jsText, null)
+                    moveSRTBoldPosition(exoPlayer?.currentPosition!!)
 
                 }
             }
@@ -289,6 +271,29 @@ class PlayerActivity : AppCompatActivity() {
         exoPlayer!!.prepare(mergedSource)
 
 
+    }
+
+    private fun moveSRTBoldPosition(currentPosition:Long) {
+        currentSRTPosition = srtInfo?.getSRTNumber(currentPosition)!! - 1
+
+        var jsText = ""
+        if (previousSRTPosition > -1)
+            jsText = "document.body.children[" + previousSRTPosition + "].style = '';"
+
+        jsText += "var node = document.body.children[" + currentSRTPosition + "];" +
+                "node.style.fontWeight = 'bold' ;" +
+                "window.scrollTo(node.offsetLeft,node.offsetTop);"
+
+        previousSRTPosition = currentSRTPosition
+
+        webViewEng.evaluateJavascript(
+            jsText,
+            object : ValueCallback<String> {
+                override fun onReceiveValue(text: String?) {
+                }
+            }
+        )
+        webViewPer.evaluateJavascript(jsText, null)
     }
 
     open inner class WebAppInterface {
