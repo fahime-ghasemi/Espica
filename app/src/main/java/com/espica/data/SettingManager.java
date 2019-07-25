@@ -22,10 +22,14 @@ public class SettingManager {
         mEditor = mSharedPreferences.edit();
     }
 
-    public static synchronized SettingManager getInstance(Context context) {
+    public static synchronized SettingManager getInstance() {
+        return INSTANCE;
+    }
+
+    public static synchronized void initialize(Context context)
+    {
         if (INSTANCE == null)
             INSTANCE = new SettingManager(context);
-        return INSTANCE;
     }
 
     public void setLoginStatus(Boolean status) {
