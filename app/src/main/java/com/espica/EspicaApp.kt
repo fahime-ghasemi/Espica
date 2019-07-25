@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit
 import android.os.Build
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
+import com.espica.data.SettingManager
 import io.fabric.sdk.android.services.settings.IconRequest.build
 import io.fabric.sdk.android.services.settings.IconRequest.build
 
@@ -24,6 +25,7 @@ class EspicaApp: MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+        SettingManager.initialize(applicationContext)
         networkApiService = provideApiService()
         // Enabling database for resume support even after the application is killed:
         val config = PRDownloaderConfig.newBuilder()

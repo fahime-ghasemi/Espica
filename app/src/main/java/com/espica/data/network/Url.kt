@@ -8,7 +8,7 @@ object Url {
     //37.130.202.169
     private val BASE_URL_TEST = "http://185.86.36.76/"
     private val BASE_URL_PRODUCTION = "http://185.86.36.76/"
-    val BASE_URL = if (BuildConfig.DEBUG) Url.BASE_URL_TEST else Url.BASE_URL_PRODUCTION
+    public val BASE_URL = if (BuildConfig.DEBUG) Url.BASE_URL_TEST else Url.BASE_URL_PRODUCTION
     const val REGISTER_DEVICE = "api/register/device/"
     const val GET_LEITNER = "api/show/litner/"
     const val GET_ALL_VIDEOS = "api/video/list/"

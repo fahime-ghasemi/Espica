@@ -1,21 +1,17 @@
 package com.espica.ui.player
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import android.net.Uri
 import android.os.Handler
+import android.os.IBinder
 import android.util.Log
 import android.view.ActionMode
 import android.view.View
 import com.espica.R
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.Format
 import com.google.android.exoplayer2.source.SingleSampleMediaSource
@@ -26,6 +22,7 @@ import kotlinx.android.synthetic.main.exo_playback_control_view.*
 import android.view.MenuItem
 import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.espica.EspicaApp
 import com.espica.data.BundleKeys
@@ -34,6 +31,7 @@ import com.espica.data.network.MyDisposableObserver
 import com.espica.data.network.Url
 import com.espica.data.network.response.VideoItem
 import com.espica.service.DownloadService
+import com.espica.service.PlayerService
 import com.espica.tools.Utils
 import com.espica.tools.srtparser.SRTInfo
 import com.espica.tools.srtparser.SRTReader
@@ -46,12 +44,9 @@ import okhttp3.ResponseBody
 import java.io.File
 
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), ServiceConnection {
 
-    private var exoPlayer: SimpleExoPlayer? = null
     private var mActionMode: ActionMode? = null
-//    private var sentenceCounter = -1
-//    private var sentenceCounterBeforeSeek = -1
     private var videoItem: VideoItem? = null
     private val TAG = "PlayerActivity"
     private val downloadReceiver: DownloadReceiver = DownloadReceiver()
@@ -61,15 +56,17 @@ class PlayerActivity : AppCompatActivity() {
     private var fileDownloadStatus = VideoItem.NOT_DOWNLOADED
     private var currentSRTPosition = -1
     private var previousSRTPosition = -1
+    private var mPlayerService: PlayerService? = null
+    private var mBound: Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.espica.R.layout.activity_player)
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(
-            Activity@ this,
-            DefaultTrackSelector()
-        )
+//        exoPlayer = ExoPlayerFactory.newSimpleInstance(
+//            Activity@ this,
+//            DefaultTrackSelector()
+//        )
         if (intent.extras?.containsKey(BundleKeys.VIDEO) == true)
             videoItem = intent.extras?.getParcelable(BundleKeys.VIDEO)
 
@@ -99,6 +96,18 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun initializeUi() {
+        simpleExoplayer.subtitleView.setVisibility(View.GONE);
+
+
+//        webViewEng.loadUrl("file:///android_asset/6_tags.html")
+        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
+        webViewEng.settings.javaScriptEnabled = true
+        webViewEng.addJavascriptInterface(WebAppInterface(), "android")
+
+        webViewPer.loadUrl(Url.BASE_URL + "api/html/persian/download/?video_id=" + videoItem?.id)
+        webViewPer.settings.javaScriptEnabled = true
+        webViewPer.addJavascriptInterface(WebAppInterface(), "android")
+
         more.setOnClickListener {
             val playerBottomSheet = PlayerBottomSheet()
             playerBottomSheet.show(supportFragmentManager, null)
@@ -119,11 +128,10 @@ class PlayerActivity : AppCompatActivity() {
 
         }
 
-        exo_progress.addListener(object : TimeBar.OnScrubListener
-        {
+        exo_progress.addListener(object : TimeBar.OnScrubListener {
             override fun onScrubMove(timeBar: TimeBar?, position: Long) {
                 moveSRTBoldPosition(position)
-                exoPlayer?.seekTo(position)
+                mPlayerService?.exoPlayer?.seekTo(position)
             }
 
             override fun onScrubStart(timeBar: TimeBar?, position: Long) {
@@ -173,9 +181,16 @@ class PlayerActivity : AppCompatActivity() {
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        val intent = Intent(this, PlayerService::class.java)
+        bindService(intent, this, Context.BIND_AUTO_CREATE)
+        ContextCompat.startForegroundService(this, intent)
+    }
+
     override fun onResume() {
         LocalBroadcastManager.getInstance(this)
-            .registerReceiver(downloadReceiver, IntentFilter("downlaod"))
+            .registerReceiver(downloadReceiver, IntentFilter("download"))
 
         super.onResume()
     }
@@ -185,18 +200,26 @@ class PlayerActivity : AppCompatActivity() {
         super.onPause()
     }
 
+    override fun onStop() {
+        if (mBound) {
+            unbindService(this)
+            mBound = false
+        }
+        super.onStop()
+    }
+
     override fun onDestroy() {
-        releasePlayer()
+//        releasePlayer()
         tempFile?.delete()
         super.onDestroy()
     }
 
 
-    private fun releasePlayer() {
-        exoPlayer!!.stop()
-        exoPlayer!!.release()
-        exoPlayer = null
-    }
+//    private fun releasePlayer() {
+//        exoPlayer!!.stop()
+//        exoPlayer!!.release()
+//        exoPlayer = null
+//    }
 
     private fun initializePlayer() {
 //        val dataSourceFactoryAsset: DataSource.Factory = DataSource.Factory {
@@ -206,61 +229,61 @@ class PlayerActivity : AppCompatActivity() {
 //        }
 
 
-        val dataSourceFactory: DataSource.Factory = if (fileDownloadStatus == VideoItem.DOWNLOADED) DefaultDataSourceFactory(
-            this,
-            "userAgent"
-        ) else DefaultHttpDataSourceFactory("userAgent")
-        val uri = if (fileDownloadStatus == VideoItem.DOWNLOADED)
-            Uri.parse(filePath)
-        else
-            Uri.parse(Url.BASE_URL + videoItem?.name)
+//        val dataSourceFactory: DataSource.Factory = if (fileDownloadStatus == VideoItem.DOWNLOADED) DefaultDataSourceFactory(
+//            this,
+//            "userAgent"
+//        ) else DefaultHttpDataSourceFactory("userAgent")
+//        val uri = if (fileDownloadStatus == VideoItem.DOWNLOADED)
+//            Uri.parse(filePath)
+//        else
+//            Uri.parse(Url.BASE_URL + videoItem?.name)
 
-        val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(uri)
+//        val videoSource = ExtractorMediaSource.Factory(dataSourceFactory)
+//            .createMediaSource(uri)
 
-        simpleExoplayer.setPlayer(exoPlayer)
-        simpleExoplayer.subtitleView.setVisibility(View.GONE);
-        exoPlayer!!.playWhenReady = true
-
-        exoPlayer!!.addTextOutput(object : TextOutput {
-            override fun onCues(cues: MutableList<Cue>?) {
-                if (cues != null && cues.size > 0) {
-                    moveSRTBoldPosition(exoPlayer?.currentPosition!!)
-
-                }
-            }
-
-        })
+//        simpleExoplayer.setPlayer(exoPlayer)
+//        simpleExoplayer.subtitleView.setVisibility(View.GONE);
+//        exoPlayer!!.playWhenReady = true
+//
+//        mPlayerService?.exoPlayer?.addTextOutput(object : TextOutput {
+//            override fun onCues(cues: MutableList<Cue>?) {
+//                if (cues != null && cues.size > 0) {
+//                    moveSRTBoldPosition(exoPlayer?.currentPosition!!)
+//
+//                }
+//            }
+//
+//        })
 
 
 //        webViewEng.loadUrl("file:///android_asset/6_tags.html")
-        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
-        webViewEng.settings.javaScriptEnabled = true
-        webViewEng.addJavascriptInterface(WebAppInterface(), "android")
+//        webViewEng.loadUrl(Url.BASE_URL + "api/html/download/?video_id=" + videoItem?.id)
+//        webViewEng.settings.javaScriptEnabled = true
+//        webViewEng.addJavascriptInterface(WebAppInterface(), "android")
+//
+//        webViewPer.loadUrl(Url.BASE_URL + "api/html/persian/download/?video_id=" + videoItem?.id)
+//        webViewPer.settings.javaScriptEnabled = true
+//        webViewPer.addJavascriptInterface(WebAppInterface(), "android")
 
-        webViewPer.loadUrl(Url.BASE_URL + "api/html/persian/download/?video_id=" + videoItem?.id)
-        webViewPer.settings.javaScriptEnabled = true
-        webViewPer.addJavascriptInterface(WebAppInterface(), "android")
+//        val textFormat = Format.createTextSampleFormat(
+//            null, MimeTypes.APPLICATION_SUBRIP, null,
+//            Format.NO_VALUE, Format.NO_VALUE, "en", null, Format.OFFSET_SAMPLE_RELATIVE
+//        )
 
-        val textFormat = Format.createTextSampleFormat(
-            null, MimeTypes.APPLICATION_SUBRIP, null,
-            Format.NO_VALUE, Format.NO_VALUE, "en", null, Format.OFFSET_SAMPLE_RELATIVE
-        )
-
-        val subtitleSource =
-            SingleSampleMediaSource.Factory(dataSourceFactory).createMediaSource(
-                Uri.parse(Url.BASE_URL + "api/srt/download/" + "?video_id=" + videoItem?.id),
-                textFormat,4*60*1000
-            )
-
-
-        val mergedSource = MergingMediaSource(videoSource, subtitleSource)
-        exoPlayer!!.prepare(mergedSource)
+//        val subtitleSource =
+//            SingleSampleMediaSource.Factory(dataSourceFactory).createMediaSource(
+//                Uri.parse(Url.BASE_URL + "api/srt/download/" + "?video_id=" + videoItem?.id),
+//                textFormat, 4 * 60 * 1000
+//            )
+//
+//
+//        val mergedSource = MergingMediaSource(videoSource, subtitleSource)
+//        exoPlayer!!.prepare(mergedSource)
 
 
     }
 
-    private fun moveSRTBoldPosition(currentPosition:Long) {
+    private fun moveSRTBoldPosition(currentPosition: Long) {
         currentSRTPosition = srtInfo?.getSRTNumber(currentPosition)!! - 1
 
         var jsText = ""
@@ -283,6 +306,38 @@ class PlayerActivity : AppCompatActivity() {
         webViewPer.evaluateJavascript(jsText, null)
     }
 
+    override fun onServiceDisconnected(p0: ComponentName?) {
+
+    }
+
+    override fun onServiceConnected(p0: ComponentName?, iBinder: IBinder?) {
+        Log.i(TAG, "onServiceConnected")
+        val binder = iBinder as PlayerService.MyBinder
+        mPlayerService = binder.service
+        simpleExoplayer.setPlayer(mPlayerService!!.exoPlayer)
+        mPlayerService?.exoPlayer?.addTextOutput(object : TextOutput {
+            override fun onCues(cues: MutableList<Cue>?) {
+                if (cues != null && cues.size > 0) {
+                    moveSRTBoldPosition( mPlayerService?.exoPlayer?.currentPosition!!)
+
+                }
+            }
+
+        })
+        if (mPlayerService!!.mediaUri == null) {
+
+            val uri = if (fileDownloadStatus == VideoItem.DOWNLOADED)
+                Uri.parse(filePath)
+            else
+                Uri.parse(Url.BASE_URL + videoItem?.name)
+
+            mPlayerService!!.mediaUri = uri
+            mPlayerService!!.mediaTitle = videoItem!!.title
+            mPlayerService!!.preparePlayer(fileDownloadStatus == VideoItem.DOWNLOADED, videoItem!!.id)
+        }
+        mBound = true
+    }
+
     open inner class WebAppInterface {
         @JavascriptInterface
         fun seekTo(number: Int) {
@@ -290,7 +345,7 @@ class PlayerActivity : AppCompatActivity() {
                 val srt = srtInfo?.get(number)
                 val mainHandler = Handler(mainLooper)
                 mainHandler.post {
-                    exoPlayer!!.seekTo(srt?.startTime!!)
+                    mPlayerService?.exoPlayer?.seekTo(srt?.startTime!!)
                     previousSRTPosition = currentSRTPosition
                 }
                 Log.i(TAG, "seek to " + srt?.startTime)
@@ -303,7 +358,7 @@ class PlayerActivity : AppCompatActivity() {
             Log.i(TAG, "onReceive")
             if (intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_CANCEL)
                 download.setImageResource(R.drawable.ic_file_download)
-            else if(intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_FINISHED)
+            else if (intent?.getIntExtra(BundleKeys.DOWNLOAD_STATUS, 0) == DownloadService.STATUS_FINISHED)
                 download.setImageResource(R.drawable.ic_file_downloaded)
             else
                 download.setImageResource(R.drawable.ic_file_downloaded)

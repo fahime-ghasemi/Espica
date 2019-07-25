@@ -56,7 +56,7 @@ class ReviewFragment : BaseFragment(), LeitnerContract.LeitnerView {
         changeCameraDistance()
         prepareCardAnim()
         initUi()
-        presenter.getLeitnerData(EspicaManager.getInstance(context).user.id.toString())
+        presenter.getLeitnerData(EspicaManager.getInstance().user.id.toString())
 
     }
 

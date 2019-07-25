@@ -52,7 +52,7 @@ class AddToLeitnerDialog : BaseDialogFragment(), LeitnerContract.AddToLeitnerVie
                 presenter.addToLeitner(
                     title.text.toString(),
                     desc.text.toString(),
-                    EspicaManager.getInstance(context).user.id.toString()
+                    EspicaManager.getInstance().user.id.toString()
                 )
         }
     }

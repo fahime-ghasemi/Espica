@@ -33,4 +33,6 @@
     <string name="cartFront">روی کارت</string>
     <string name="cartBack">پشت کارت</string>
     <string name="notify_channel">Espica notify channel</string>
+    <string name="pause">توقف</string>
+    <string name="play">پخش</string>
 </resources>

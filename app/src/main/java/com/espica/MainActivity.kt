@@ -147,7 +147,7 @@ class MainActivity : AppCompatActivity(), MainActivityListener, OnMenuItemClickL
     }
 
     override fun onDestroy() {
-        EspicaManager.getInstance(applicationContext).release()
+        EspicaManager.getInstance().release()
         super.onDestroy()
     }
 }

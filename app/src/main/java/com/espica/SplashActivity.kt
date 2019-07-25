@@ -13,7 +13,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-        if(!EspicaManager.getInstance(this).user.isLogin)
+        if(!EspicaManager.getInstance().user.isLogin)
             goToLogin()
         else goToMain()
         finish()
