@@ -7,17 +7,17 @@ public class EspicaManager {
     private static EspicaManager INSTANCE = null;
     private User user;
 
-    private EspicaManager(Context context) {
-        refreshUser(context);
+    private EspicaManager() {
+        refreshUser();
     }
 
-    public void refreshUser(Context context) {
-        user = SettingManager.getInstance(context).loadUserInfo();
+    public void refreshUser() {
+        user = SettingManager.getInstance().loadUserInfo();
     }
 
-    public synchronized static EspicaManager getInstance(Context context) {
+    public synchronized static EspicaManager getInstance() {
         if (INSTANCE == null)
-            INSTANCE = new EspicaManager(context);
+            INSTANCE = new EspicaManager();
 
         return INSTANCE;
     }
