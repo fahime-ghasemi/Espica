@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -22,6 +23,7 @@ public class NotificationManager {
     private NotificationCompat.Builder playingBuilder;
     private NotificationCompat.BigTextStyle  bigTextStyle;
     private static final int  REQUEST_CODE_CANCEL = 206;
+    private final static String TAG = "NotificationManager";
 
 
     private Context context;
@@ -98,6 +100,8 @@ public class NotificationManager {
 
     public void showPlayingNotification(MediaSessionCompat.Token token ,PlaybackStateCompat state,int notificationId)
     {
+        Log.i(TAG,"showPlayingNotification");
+
         int icon;
         String play_pause;
         if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
@@ -112,7 +116,8 @@ public class NotificationManager {
                 icon, play_pause,
                 MediaButtonReceiver.buildMediaButtonPendingIntent(context,
                         PlaybackStateCompat.ACTION_PLAY_PAUSE));
-        playingBuilder.addAction(playPauseAction)
+        playingBuilder.addAction(icon, play_pause,MediaButtonReceiver.buildMediaButtonPendingIntent(context,
+                PlaybackStateCompat.ACTION_PLAY_PAUSE) )
           .setStyle(new androidx.media.app.NotificationCompat.MediaStyle()
             .setMediaSession(token)
             .setShowActionsInCompactView(0));
